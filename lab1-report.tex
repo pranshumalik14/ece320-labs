@@ -26,20 +26,32 @@ Introduction to the lab and its purpose. The following is the reflection coeffic
 
 \section{Determining the Characteristic Impedance, $Z_0$}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur.
+// TODO: Ask prof about 3.2 question 1. Wording unclear
 
-We know that the reflections become 0 when $Z_L = Z_0$.
+We changed the variable load on the switch box, until we saw no reflection.
+This was at $Z_L = 50 \Omega$ which is also equal to the charactertic impedance 
+since we know that the reflections nullify when $Z_L = Z_0$. The corresponding waveform
+measured at the generator input (channel 1) and the transmission line input (channel 2) is also shown in Figure 1.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[width=3.0in]{photos/lab1/test.jpg}
-    \caption{Simulation Results}
+    \includegraphics[width=3.0in]{photos/lab1/load_matched.jpg}
+    \caption{Transmission line terminated with load equal to $Z_0$}
     \label{simulationfigure}
 \end{figure}
+
+\section{Determining $Z_0$ using $\frac{v_1(t,0)}{i_1(t,0)}$}
+
+As seen in the picture the voltage at $v_g$ is 154mV and $v_1$ is equal to 51mV. Assuming the resistance in between is $100\Omega$ 
+ $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i_l}=\frac{0.051}{1.03*10^-3}=49.51\Omega~50\Omega $
+
+
+\section{Observation of Travelling Waves}
+
+We know that the phase velocity of an electromagentic wave in space with magnetic permeability, $\mu$,
+and electric permittivitty, $\epsilon$  is given by:
+$$v_p = \frac{1}{\sqrt{\mu \epsilon}}$$
+
 
 
 \section{Conclusion}
