@@ -20,18 +20,17 @@ propagation along the T.L.s, as well as depedance on loads.
 Introduction to the lab and its purpose. The following is the reflection coefficient for a transmission line
 
 \[
-    \label{simple_equation}
+    \label{reflection_coefficient}
     \Gamma = \frac{Z_L - Z_0}{Z_L + Z_0}
 \]
 
 \section{Determining the Characteristic Impedance, $Z_0$}
 
-// TODO: Ask prof about 3.2 question 1. Wording unclear
-
-We changed the variable load on the switch box, until we saw no reflection.
+We varied the load on the switch box until we saw little or no traces of reflected waves.
 This was at $Z_L = 50 \Omega$ which is also equal to the charactertic impedance 
-since we know that the reflections nullify when $Z_L = Z_0$. The corresponding waveform
-measured at the generator input (channel 1) and the transmission line input (channel 2) is also shown in Figure 1.
+since we know that the reflections nullify when $Z_L = Z_0$. The corresponding waveforms
+captured at the generator input (channel 1, yellow) and the transmission line input (channel 2, green) 
+are shown in Figure 1.
 
 \begin{figure}[h]
     \centering
@@ -40,7 +39,7 @@ measured at the generator input (channel 1) and the transmission line input (cha
     \label{simulationfigure}
 \end{figure}
 
-\section{Determining $Z_0$ using $\frac{v_1(t,0)}{i_1(t,0)}$}
+\section{Determining $Z_0$ using $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$}
 
 As seen in the picture the voltage at $v_g$ is 154mV and $v_1$ is equal to 51mV. Assuming the resistance in between is $100\Omega$ 
  $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i_l}=\frac{0.051}{1.03*10^-3}=49.51\Omega~50\Omega $
