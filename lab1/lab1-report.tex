@@ -1,62 +1,77 @@
 \documentclass[10pt]{article}
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
+\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[letterpaper,margin=1in]{geometry}
 \usepackage[parfill]{parskip}
-\usepackage[europeanresistors, american voltage]{circuitikz}
+\usepackage[europeanresistors, american]{circuitikz}
+\usetikzlibrary{arrows,shapes,calc,positioning}
+
+\newcommand{\oscope}[2] % #1 = name , #2 = rotation angle
+{
+    \draw[thick,rotate=#2] (#1) circle (12pt)
+    (#1) ++(-0.35,-0.1) -- ++(0.3,0.3) --++(0,-0.3)-- ++(0.3,0.3) --++(0,-0.3);
+}
 
 \begin{document}
 
 \title{\textbf{\Large{\textsc{ECE320:} Fields and Waves}} \\ \Large{Lab 1 Report: Waves on Transmission Lines}}
 \author{Alp Tarım, Pranshu Malik}
 
-
 \maketitle
 
 \section{Introduction}
-This assignment was about exploring the characteristics of transmission lines (abbrv. T.L.), studying voltage and current 
-propagation along the T.L.s, as well as depedance on loads. Introduction to the lab and its purpose. The following is the reflection coefficient for a transmission line
 
-% \[
-%     \label{reflection_coefficient}
-%     \Gamma = \frac{Z_L - Z_0}{Z_L + Z_0}
-% \]
+This laboratory focused on investigating the characteristics of transmission lines, studying voltage and current 
+propagation along them, as well as its depedance on the nature of load impedance.
 
-\section{Determining the Characteristic Impedance, $Z_0$}
+
+\section[Determining the Characteristic Impedance, Z0]{Determining the Characteristic Impedance, {$Z_0$}}
 
 We varied the load on the switch box until we saw little or no traces of reflected waves.
 This was at $Z_L = 50 \Omega$ which is also equal to the charactertic impedance 
 since we know that the reflections nullify when $Z_L = Z_0$. The corresponding waveforms
-captured at the generator input (channel 1, yellow) and the transmission line input (channel 2, green) 
+captured at the generator input (channel 1, top) and the transmission line input (channel 2, bottom) 
 are shown in Figure 1.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=6.0cm]{../photos/lab1/load_matched.jpg}
+    \includegraphics[width=5.49cm]{../photos/lab1/load_matched.jpg}
     \caption{Transmission line terminated with load equal to $Z_0$}
     \label{simulation_figure}
 \end{figure}
 
-\section{Determining $Z_0$ using $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$}
+
+\section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$}
+
+Find something below:
+
+\begin{figure}[!hb] \centering
+    \begin{circuitikz} 
+        \draw
+        (0,2) to [sqV, l_=$\tilde V_g$] (0, 0) -- (2,0)
+        to [tline, l_=Transmission Line, o-o] (7,0)
+        to [R, l=$Z_L$] (7, 2)
+        to [tline, l=${Z_0, \beta, L}$, o-o] (2,2)
+        to [R, l_=$Z_g$, i<^=$\tilde I$] (0, 2);
+        
+        \draw (2,2.35) node{$\tilde V$} (2, 2);
+        \draw (2,0) -- (2.5,-0.15) to[sV, l_=\footnotesize{CH1}, color=white, name=CH1] (2.5,1.75) -- (2, 2);
+        \oscope{CH1}{0}
+        \draw (7,0) -- (8,-0.15) to[sV, l_=\footnotesize{CH2}, color=white, name=CH2] (8,1.75) -- (7, 2);
+        \oscope{CH2}{0}
+        \draw (0,0) to[short, *-*] node[ground]{} (0,0);
+        \draw [dotted] (2,-0.35) -- (2,0.35) (7,-0.35) -- (7,0.35)
+        (2, -0.5) node{$z=0$} (2, -0.35) (7, -0.5) node{$z=L$} (7, -0.35);
+    \end{circuitikz}
+    \caption{Circuit setup }
+    \label{circuit_diag}
+\end{figure}
 
 As seen in the picture the voltage at $v_g$ is 154mV and $v_1$ is equal to 51mV. Assuming the resistance in between is $100\Omega$ 
  $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i_l}=\frac{0.051}{1.03*10^-3}=49.51\Omega~50\Omega $
 
-\begin{figure}[h] \centering
-    \begin{circuitikz} \draw
-        (0,2) to [sqV, l_=$\tilde V_g$] (0, 0) -- (2,0)
-        to [tline, l_=Transmission Line, *-o] (7,0)
-        to [R, l_=$Z_L$] (7, 2)
-        to [tline, l_=${Z_0, \beta}$, o-*] (2.8,2)
-        to [short, i_=${\tilde I(z=0) v(z=0)}$] (2,2)
-        to [R, l_=$Z_g$] (0, 2);
-
-        \draw (2,2) to[sV, l=\footnotesize{CH1}, color=gray] (2,0);
-    \end{circuitikz}
-    \caption{Pulse }
-    \label{circuit_diag}    
-\end{figure}
 
 Thus, we can see something there.
 
@@ -65,8 +80,11 @@ Thus, we can see something there.
 We know that the phase velocity of an electromagentic wave in space with magnetic permeability, $\mu$,
 and electric permittivitty, $\epsilon$  is given by: 
 
-$$v_p = \frac{1}{\sqrt{\mu \epsilon}}$$
+\[
+    v_p = \frac{1}{\sqrt{\mu \epsilon}}
+\]
 
+\section{Observation of Travelling Waves}
 
 \section{Conclusion}
 
@@ -81,6 +99,7 @@ fugiat nulla pariatur.
 All pictures taken during the lab were post-processed in a batch using a custom script
 that bit-wise inverted the pixels and the thresholded to produce a binarized image. No
 adjustments or modifications were made to the readings, for which the oscilloscope's measurements
-are also shown alongside the waveforms.
+are also shown alongside the waveforms. All work can be found at 
+\href{https://github.com/pranshumalik14/ece320-labs}{\texttt{github.com/pranshumalik14/ece320-labs}}.
 
 \end{document}
