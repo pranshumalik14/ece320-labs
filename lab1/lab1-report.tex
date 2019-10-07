@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{lipsum}
+\usepackage{amsfonts}
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[letterpaper,margin=1in]{geometry}
@@ -223,11 +224,63 @@ be verified using a bounce diagram. The theoretical $V(d)$ graphs for different 
 \section{Multiple Reflections}
 
 For mismatched generator side, $Z_g = 150\Omega$, as well as the load side, $Z_L = 20\Omega$, there will 
-be reflections on both ends of the transmission line. 
+be reflections on both ends of the transmission line. The observed waveforms can be found in Figure 9, with channel 1 (top) recording
+signals at port C and channel 2 (bottom) recording signals at port F.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_mult_1T.jpg}
+        \caption{$\tau = T$}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_mult_10T.jpg}
+        \caption{$\tau = 10T$}
+    \end{subfigure}
+    \caption{Multiply reflected signals for input signal with different pulsewidths\vspace{-0.4cm}}
+    \label{v_t_ref_mult}
+\end{figure}
+
+At the generator end of the transmission line, $\Gamma_g = \frac{100 \Omega}{200 \Omega} = \frac{1}{2}$, and
+at the load end $\Gamma_L = \frac{-30 \Omega}{70 \Omega} = \frac{-3}{7}$. In Figure 9 (a), we measure
+$\tilde V^+ = \tilde V_1^+ = 51.5\text{mV}$ on channel 1 for $t \in (0, T)$, whereas on channel 2 for $t \in (T, 2T)$, we measure $\tilde V = \tilde V^+ + \tilde V^- = 29\text{mV}$.
+This implies that $\tilde V^- = \Gamma_L\tilde V^+ = 29 - 51.5\text{mV} = -22.5\text{mV}$. Therefore, the observed 
+$\Gamma_L = \frac{\tilde V^-}{\tilde V^+} = \frac{-22.5\text{mV}}{51.5\text{mV}} = -0.437 \approx \frac{-3}{7}$. Similarly, in Figure 9 (a), 
+we measure $\tilde V = \Gamma_L\tilde V_1^+ + \Gamma_g\Gamma_L\tilde V^+_1 = -32\text{mV}$ at port C (channel 1) for $t \in (2T, 3T)$.
+Here we use the previous measurement of $\Gamma_L = -0.437$, we measure $\Gamma_g = 0.42 \approx \frac{1}{2}$. Thus, both of our 
+measurements closely match the theoretical values for the reflection coefficients.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../photos/lab1/v_t_bounce_mult_ref.jpg}
+    \caption{Theoretical bounce diagrams and $V(t)$ plots for $\tau = T$ and $\tau = 10T$\vspace{-0.5cm}}
+    \label{v_t_bounce_mult}
+\end{figure}
+
+Theoretical bounce diagrams and $V(t)$ plots for signals observed at ports C and F can be found in Figure 10. In Figures 9 and 10, 
+we observe such behavior of pulses because the input pulse creates a reflection at the load which comes back to the source; however,
+when the reflection reaches the source, it is also being reflected and, thus, the source and load in this setup 
+keep the pulse bouncing back and forth until it completely dies out beacuse of resistive losses along the transmission line.
+
 
 \section{Input Impedance and Transmission Line Length}
 
-\begin{figure}[h] \centering
+While sweeping the input sinusoid frequency from 1MHz to 4MHz, we recorded the frequencies at 
+which $||\tilde V_\text{in}||$ achieved its minimum. These frequencies are listed in Table 2.
+\begin{table}[ht]
+    \[
+        \begin{array}{c|c}
+            f_\text{min} \textbf{ Shorted} &  f_\text{min} \textbf{ Capacitive} \\ \hline
+            1.4 & 1.6\\
+            2.8 & 3.0\\
+            4.0 & 4.2
+        \end{array}
+    \]
+    \caption{Corresponding $f_min$ for minimum $\tilde V_in$ for zero and capacitive loads in $\text{MHz}$\vspace{-0.5cm}}
+\end{table}
+
+\begin{figure}[ht] \centering
     \begin{circuitikz} 
         \draw
         (0, 2) to [V, l_=$\tilde V_g$] (0, 0) -- (2, 0)
@@ -245,15 +298,22 @@ be reflections on both ends of the transmission line.
     \label{volt_diag}
 \end{figure}
 
-We know that the impedance changes.
+To explain this effect for the short circuited (zero) load, we know that $\Gamma_L = -1 \implies \phi_Gamma = \pi$ and the voltage along the transmission line is 
+$\tilde V(z) = \tilde V_0^+e^{-j\beta z}(1 + ||\Gamma_L|| e^{j2\beta z + j\phi_\Gamma})$. Thus, the voltage minimum occurs
+when $\phi_\Gamma + 2\beta z = (2k + 1)\pi, k \in \mathbb{Z}$. Since $\beta \propto \omega$, as we increase frequencies, there is a 
+change in $||\tilde V(z)||$. Also, since current $\tilde I = \frac{\tilde V_0}{Z_0}e^{-j\beta z}(1 - ||\Gamma||e^{j2\beta z + j\phi_\Gamma})$, there is a current maximum
+at voltage minimum, as when $||(1 + e^{j2\beta z + j\phi_\Gamma})||$ is minimum $||(1 - e^{j2\beta z + j\phi_\Gamma})||$ will be at its maximum.
 
+
+To explain voltage minimum for the capacitive load, we know that net input impedance of the load and transmission line at the source, $Z_in$, varies with frequency:
 \[
     Z_{\text{in}} = Z(z)\big\rvert_{z=-L} = Z_0 \frac{1+\Gamma e^{j2\beta z}}{1-\Gamma e^{j2\beta z}}\bigg\rvert_{z=-L} = Z_0 \frac{Z_L + jZ_0\tan{\beta L}}{Z_0 + jZ_L\tan{\beta L}}
 \]
 
-\section{Conclusion}
-
-Through this lab, 
+Thus, at certain frequencies, when $Z_\text{in}$ is minimum, $||\tilde V_\text{in}||$ will also be minimum. To find frequencies at which this minimum will occur,
+we know that now $\Gamma = \frac{jX_c(\omega) - Z_0}{jX_c(\omega) + Z_0} = ||\Gamma||e^{j\phi_\Gamma}$. Here, we note that for a pure
+capacitive load $||\Gamma|| = 1$ and phase is a function of frequency, $\phi_\Gamma(\omega) = 2\arctan(\frac{10^8j}{50\omega})$ for $C = 0.01\mu F$, as opposed to the short circuited load where $\phi\Gamma = \pi$.
+Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_min$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase
 
 \section{Notes}
 
