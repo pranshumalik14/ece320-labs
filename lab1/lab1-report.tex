@@ -88,7 +88,7 @@ are shown in Figure 1.
     \label{delta_v_shunt}
 \end{figure}
 
-As seen in Figure 3, the voltage at $\tilde V_1 = 154\text{mV}$ and $v_1 = 51\text{mV}$. Given the value of $R_\text{shunt} = 100\Omega$,
+As seen in Figure 3, the voltage at $\tilde V_1 = 154\text{mV}$ and $\tilde V_2 = 51\text{mV}$. Given the value of $R_\text{shunt} = 100\Omega$,
 we can calculate $\tilde I^+ = \frac{0.154-0.051}{100} = 1.03\text{mA}$. From Figure 4, we can see that $\tilde V_2 = \tilde V^+$, and therefore we can confirm the
 value of $Z_0$ through the relation, $Z_0 := \frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)} = \frac{51\text{mV}}{1.03\text{mA}} = 49.51\Omega \approx 50\Omega$.
 
@@ -179,8 +179,8 @@ The theoretical $V(t)$ plots in Figure 6 closely match the observations in Figur
 
 \section{Simple Reflection}
 
-There is a load mismatch if $Z_L \neq Z_0$ and we know that, in this case, reflection of current and
-voltage occurs at the load, i.e. $\tilde v^- \neq 0$ and $\tilde I^- \neq 0$. The load reflection coefficient, $\Gamma_L$,
+For an input pulse signal, the magnitude of the first voltage pulse across the transmission line input will always be $\tilde V^+_1 = \tilde V_g\frac{Z_0}{Z_0+Z_g}$, regardless of $Z_L$. There will be a load mismatch if $Z_L \neq Z_0$ and we know that, in this case, reflection of current and
+voltage occurs at the load, i.e. $\tilde V^- \neq 0$ and $\tilde I^- \neq 0$. The load reflection coefficient, $\Gamma_L$,
 if defined as:
 \[
     \Gamma_L := \frac{\tilde V^-}{\tilde V^+} = \frac{Z_L - Z_0}{Z_L + Z_0}
@@ -277,7 +277,7 @@ which $||\tilde V_\text{in}||$ achieved its minimum. These frequencies are liste
             4.0 & 4.2
         \end{array}
     \]
-    \caption{Corresponding $f_min$ for minimum $\tilde V_in$ for zero and capacitive loads in $\text{MHz}$\vspace{-0.5cm}}
+    \caption{Corresponding $f_\text{min}$ for minimum $\tilde V_\text{in}$ for zero and capacitive loads in $\text{MHz}$\vspace{-0.5cm}}
 \end{table}
 
 \begin{figure}[ht] \centering
@@ -312,8 +312,8 @@ To explain voltage minimum for the capacitive load, we know that net input imped
 
 Thus, at certain frequencies, when $Z_\text{in}$ is minimum, $||\tilde V_\text{in}||$ will also be minimum. To find frequencies at which this minimum will occur,
 we know that now $\Gamma = \frac{jX_c(\omega) - Z_0}{jX_c(\omega) + Z_0} = ||\Gamma||e^{j\phi_\Gamma}$. Here, we note that for a pure
-capacitive load $||\Gamma|| = 1$ and phase is a function of frequency, $\phi_\Gamma(\omega) = 2\arctan(\frac{10^8j}{50\omega})$ for $C = 0.01\mu F$, as opposed to the short circuited load where $\phi\Gamma = \pi$.
-Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_min$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase
+capacitive load $||\Gamma|| = 1$ and phase is a function of frequency, $\phi_\Gamma(\omega) = 2\arctan(\frac{10^8j}{50\omega})$ for $C = 0.01\mu F$, as opposed to the short circuited load where $\phi_\Gamma = \pi$.
+Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_\text{min}$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase
 
 \section{Notes}
 
