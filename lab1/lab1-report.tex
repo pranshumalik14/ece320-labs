@@ -19,10 +19,12 @@
     (#1) ++(-0.35,-0.1) -- ++(0.3,0.3) --++(0,-0.3)-- ++(0.3,0.3) --++(0,-0.3);
 }
 
+\vspace{-8ex}
+\date{}
 \begin{document}
 
-\title{\textbf{\Large{\textsc{ECE320:} Fields and Waves}} \\ \Large{Lab 1 Report: Waves on Transmission Lines}}
-\author{Alp Tarım, Pranshu Malik}
+\title{\textbf{\Large{\textsc{ECE320:} Fields and Waves}} \\ \Large{Lab 1 Report: Waves on Transmission Lines} \\ \textbf{\small{PRA106}}\vspace{-0.3cm}}
+\author{Alp Tarım, Pranshu Malik \\ \footnotesize{1003860128}, \footnotesize{1004138916}}
 
 \maketitle
 
@@ -30,7 +32,6 @@
 
 This laboratory focused on investigating the characteristics of transmission lines, studying voltage and current 
 propagation along them, as well as its depedance on the nature of load impedance.
-
 
 \section[Determining the Characteristic Impedance, Z0]{Determining the Characteristic Impedance, {$Z_0$}}
 
@@ -42,15 +43,14 @@ are shown in Figure 1.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=6.54cm]{../photos/lab1/load_matched.jpg}
-    \caption{Transmission line terminated with load equal to $Z_0$}
+    \includegraphics[width=0.45\textwidth]{../photos/lab1/load_matched.jpg}
+    \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
     \label{tline_matching_z_0}
 \end{figure}
 
+\section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)}$}
 
-\section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$}
-
-\begin{figure}[!hb] \centering
+\begin{figure}[ht] \centering
     \begin{circuitikz} 
         \draw
         (0,2) to [sqV, l_=$\tilde V_g$] (0, 0) -- (2,0)
@@ -66,14 +66,30 @@ are shown in Figure 1.
         \oscope{CH2}{0}
         \draw (0,0) to[short, *-*] node[ground]{} (0,0);
         \draw [dotted] (2,-0.35) -- (2,0.35) (7,-0.35) -- (7,0.35)
-        (2, -0.5) node{$z=0$} (2, -0.35) (7, -0.5) node{$z=L$} (7, -0.35);
+        (2.1, -0.5) node{$z=-L$} (2, -0.35) (7, -0.5) node{$z=0$} (7, -0.35);
     \end{circuitikz}
-    \caption{Laborartory setup for studying characteristcs of tranmission lines}
+    \caption{Laborartory setup for studying characteristcs of tranmission lines\vspace{-0.5cm}}
     \label{tline_diag}
 \end{figure}
 
-As seen in the picture the voltage at $v_g$ is 154mV and $v_1$ is equal to 51mV. Assuming the resistance in between is $100\Omega$ 
-$i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i_l}=\frac{0.051}{1.03*10^-3}=49.51\Omega~50\Omega $
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/shunt_delta_v_1.jpg}
+        \caption{$\tilde V_1 \approx 154\text{mV}$}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/shunt_delta_v_2.jpg}
+        \caption{$\tilde V_2 \approx 51\text{mV}$}
+    \end{subfigure}
+    \caption{$\tilde V$ measured across $R_\text{shunt} = 100\Omega$\vspace{-0.5cm}}
+    \label{delta_v_shunt}
+\end{figure}
+
+As seen in Figure 3, the voltage at $\tilde V_1 = 154\text{mV}$ and $v_1 = 51\text{mV}$. Given the value of $R_\text{shunt} = 100\Omega$,
+we can calculate $\tilde I^+ = \frac{0.154-0.051}{100} = 1.03\text{mA}$. From Figure 4, we can see that $\tilde V_2 = \tilde V^+$, and therefore we can confirm the
+value of $Z_0$ through the relation, $Z_0 := \frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)} = \frac{51\text{mV}}{1.03\text{mA}} = 49.51\Omega \approx 50\Omega$.
 
 \begin{figure}[h] \centering
     \begin{circuitikz} 
@@ -90,72 +106,124 @@ $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i
 
         \draw (4.75,1) node[]{$\displaystyle{\tilde I = \frac{\tilde V_1 - \tilde V_2}{R_{\text{shunt}}}}$} (4.75,1);
     \end{circuitikz}
-    \caption{Estimating input current through a shunt resistance}
+    \caption{Estimating input current through a shunt resistance \vspace{-0.5cm}}
     \label{shunt_diag}
 \end{figure}
 
-Thus, we can see something there. We know that $\tilde V_2 = \tilde V(z=0)$ and thus, we can confirm the
-value of $Z_0$ through the following relation: $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$.
-
 \section{Observation of Travelling Waves}
 
-We observed the following waveforms at different points, C = 0m, D = 30m, E = 60m, F = 90m along the 
+Observed waveforms at different points on the transmission line can be found in Figure 5.
 
-\begin{figure} [h]
+\begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.35\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_c.jpg}
-        \caption{Point C}
+        \caption{Port C $(0\text{m})$}
     \end{subfigure}
-    \begin{subfigure}[b]{0.35\textwidth}
+    \quad
+    \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_d.jpg}
-        \caption{Point D}
+        \caption{Port D $(30\text{m})$}
     \end{subfigure}
-    \begin{subfigure}[b]{0.35\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_e.jpg}
-        \caption{Point E}
+        \caption{Port E $(60\text{m})$}
     \end{subfigure}
-    \begin{subfigure}[b]{0.35\textwidth}
+    \quad
+    \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_f.jpg}
-        \caption{Point F}
+        \caption{Port F $(90\text{m})$}
     \end{subfigure}
-    \caption{Observed waveforms, $V(t)$, at different loactions along the transmission line}
-    \label{}
+    \caption{Measured $V(t)$ at different loactions along the transmission line with $Z_L = Z_0$ \vspace{-0.5cm}}
+    \label{v_t_matched_tline}
 \end{figure}
 
-The table of delays are:
+The recorded time delays, $\Delta t$, relative to the input signal are listed in Table 1.
 
-\begin{table} [h]
+\begin{table}[h]
     \[
         \begin{array}{c|c}
-            \textbf{Point} & \Delta t \textbf{ (ns)} \\ \hline
+            \textbf{Port} & \Delta t \textbf{ (ns)} \\ \hline
             \text{D} & 130\\
             \text{E} & 244\\
             \text{F} & 368
         \end{array}
     \]
-    \caption{Time delay for pulses}
+    \caption{Recorded time delay at different locations along the transmission line\vspace{-0.5cm}}
 \end{table}
 
-\section{Determination of Velocity of Propagation}
+\section{Determining Velocity of Propagation}
 
 The velocity of propagation of the signal can be calculated by the relation $v_p = \frac{\Delta L}{\Delta t}$, given that
-we are able to track the same point on the waveform at both places. Using the data from table 1,
+we are able to track the same point on the waveform. Using the data from Table 1,
 we get that the average velocity of propagation is $v_{p, \text{avg}} = 2.44 \cdot 10^8 \text{m/s}$.
 
-We know that the phase velocity of an electromagentic wave in space with magnetic permeability, $\mu$,
-and electric permittivitty, $\epsilon$  is given by: 
+Now, to find the relative permittivity, we also know that the phase velocity of an electromagentic wave in an electrical transmission line with magnetic permeability, $\mu \approx \mu_0$,
+and electric permittivity, $\epsilon = \epsilon_r \epsilon_0$,  is given by: 
 
 \[
-    v_p = \frac{1}{\sqrt{\mu \epsilon}}
+    v_p = \frac{1}{\sqrt{\mu \epsilon}} \implies \frac{v_p}{c} \approx 
+    \sqrt{\frac{\mu_0\epsilon_0}{\mu_0\epsilon_0\epsilon_r}} \implies 
+    \epsilon_r \approx \frac{c^2}{v_p^2} \approx 1.51
 \]
+
+The theoretical $V(t)$ plots in Figure 6 closely match the observations in Figure 5.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../photos/lab1/v_t_bounce_no_reflection.jpg}
+    \caption{Theoretical bounce diagram and $V(t)$ plots along the transmission line\vspace{-0.5cm}}
+    \label{v_t_bounce_no_reflection}
+\end{figure}
 
 \section{Simple Reflection}
 
-We know that
+There is a load mismatch if $Z_L \neq Z_0$ and we know that, in this case, reflection of current and
+voltage occurs at the load, i.e. $\tilde v^- \neq 0$ and $\tilde I^- \neq 0$. The load reflection coefficient, $\Gamma_L$,
+if defined as:
+\[
+    \Gamma_L := \frac{\tilde V^-}{\tilde V^+} = \frac{Z_L - Z_0}{Z_L + Z_0}
+\]
+
+Thus, in cases where there is a load mismatch, $\Gamma_L \neq 0$, there will be a relection of intensity $\tilde V^- = \Gamma_L\tilde{V^+}$ along the 
+transmission line towards the generator and the steady state for a step input will be achieved after the voltage and current 
+wave has travelled back and forth once, and this can also be verified using a bounce diagram. The Theoretically for $Z_L = 100\Omega$, $\Gamma_L = \frac{50\Omega}{150\Omega} = \frac{1}{3} $ and through the measurements, we observe the reflection 
+coefficient $\Gamma_L = \frac{30\text{mV}}{100\text{mV}} = \frac{3}{10} \approx \frac{1}{3}$.
+
+The measurements for reflected voltage waves can be found in Figure 7. Channel 1 (top) waveform has been 
+recorded at port C ($0\text{m}$) and channel 2 (bottom) waveform has been recorded at port F ($90\text{m}$).
+The pulsewidth $\tau$ of the signal was set such that it was equal to the time delay $T$ for a pulse to reach
+port F from port C, which made the signal recordings at port C and F exactly out of phase. In terms of magnitude, the
+signal at port F was a superposition of the incident and reflected wave $\tilde V_F = \tilde V^+ + \Gamma_L\tilde V^+$.
+Similarly at port C, the signal at $t \in (2T, 3T)$, $\tilde V_C = \Gamma_L\tilde V^+ = \tilde V^-$, which can all again
+be verified using a bounce diagram. The theoretical $V(d)$ graphs for different time points can be found in Figure 8.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_L_1.jpg}
+        \caption{$\tilde V_1 = \tilde V^+ \approx 100\text{mV}$}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_L_2.jpg}
+        \caption{$\tilde V_2 = \Gamma_L\tilde V^+ = \tilde V^- \approx 30\text{mV}$}
+    \end{subfigure}
+    \caption{$\tilde V$ measured at port C and port F for input signal with pulsewidth $\tau = T$\vspace{-0.5cm}}
+    \label{v_t_c_f}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../photos/lab1/v_d_gamma_L.jpg}
+    \caption{$V(d)$ plots at different time points\vspace{-0.5cm}}
+    \label{v_d_different_T}
+\end{figure}
 
 \section{Multiple Reflections}
 
+For mismatched generator side, $Z_g = 150\Omega$, as well as the load side, $Z_L = 20\Omega$, there will 
+be reflections on both ends of the transmission line. 
 
 \section{Input Impedance and Transmission Line Length}
 
@@ -173,30 +241,26 @@ We know that
         node[]{$\displaystyle{\tilde V_{\text{in}} = \tilde V_g\frac{Z_{\text{in}}}{Z_{\text{in}} + Z_g}}$} 
         (3.45, 2.4);
     \end{circuitikz}
-    \caption{Voltage division over net input impedance, $Z_\text{in}$}
+    \caption{Voltage division over net input impedance, $Z_\text{in}$\vspace{-0.5cm}}
     \label{volt_diag}
 \end{figure}
 
 We know that the impedance changes.
 
 \[
-    Z_{\text{in}} = Z_0 \frac{1+\Gamma_d}{1-\Gamma_d} = Z_0 \frac{Z_0 + jZ_L\tan{\beta L}}{Z_L + jZ_0\tan{\beta L}}
+    Z_{\text{in}} = Z(z)\big\rvert_{z=-L} = Z_0 \frac{1+\Gamma e^{j2\beta z}}{1-\Gamma e^{j2\beta z}}\bigg\rvert_{z=-L} = Z_0 \frac{Z_L + jZ_0\tan{\beta L}}{Z_0 + jZ_L\tan{\beta L}}
 \]
 
 \section{Conclusion}
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur.
+Through this lab, 
 
 \section{Notes}
 
-All pictures taken during the lab were post-processed in a batch using a custom script
-that bit-wise inverted the pixels and the thresholded to produce a binarized image. No
-adjustments or modifications were made to the readings, for which the oscilloscope's measurements
-are also shown alongside the waveforms. All work can be found at 
+All images taken during the lab were post-processed in a batch using a custom script
+that bit-wise inverts the pixels and binarizes the resulting image based on a custom threshold.
+No adjustments or modifications were made to the readings, for which the oscilloscope's measurements
+are also shown alongside the waveforms. All scripts and related work can be found at 
 \href{https://github.com/pranshumalik14/ece320-labs}{\texttt{github.com/pranshumalik14/ece320-labs}}.
 
 \end{document}
