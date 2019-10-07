@@ -1,5 +1,6 @@
 \documentclass[10pt]{article}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{lipsum}
@@ -43,7 +44,7 @@ are shown in Figure 1.
     \centering
     \includegraphics[width=6.54cm]{../photos/lab1/load_matched.jpg}
     \caption{Transmission line terminated with load equal to $Z_0$}
-    \label{simulation_figure}
+    \label{tline_matching_z_0}
 \end{figure}
 
 
@@ -77,7 +78,7 @@ $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i
 \begin{figure}[h] \centering
     \begin{circuitikz} 
         \draw [dotted][thick] (0,0) -- (0,2) (2,0) -- (2,2) (0, 2) -- (-1, 2) (2, 2) -- (3, 2);
-        \draw (0,1.5) to [R, l=$R_{\text{shunt}}$, i>^=$\tilde I$, o-o] (2, 1.5);
+        \draw (0,1.5) to [R, l=$R_{\text{shunt}}$, i>^=$\tilde I$, *-*] (2, 1.5);
         \draw (0,0.15) -- (2, 0.15);
         \draw (1, 0.15) to [short, *-*] node[ground]{} (1,0.15);
         \draw (0,0.15) circle (1.5pt);
@@ -93,9 +94,54 @@ $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i
     \label{shunt_diag}
 \end{figure}
 
-Thus, we can see something there.
+Thus, we can see something there. We know that $\tilde V_2 = \tilde V(z=0)$ and thus, we can confirm the
+value of $Z_0$ through the following relation: $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$.
 
 \section{Observation of Travelling Waves}
+
+We observed the following waveforms at different points, C = 0m, D = 30m, E = 60m, F = 90m along the 
+
+\begin{figure} [h]
+    \centering
+    \begin{subfigure}[b]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_c.jpg}
+        \caption{Point C}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_d.jpg}
+        \caption{Point D}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_e.jpg}
+        \caption{Point E}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_f.jpg}
+        \caption{Point F}
+    \end{subfigure}
+    \caption{Observed waveforms, $V(t)$, at different loactions along the transmission line}
+    \label{}
+\end{figure}
+
+The table of delays are:
+
+\begin{table} [h]
+    \[
+        \begin{array}{c|c}
+            \textbf{Point} & \Delta t \textbf{ (ns)} \\ \hline
+            \text{D} & 130\\
+            \text{E} & 244\\
+            \text{F} & 368
+        \end{array}
+    \]
+    \caption{Time delay for pulses}
+\end{table}
+
+\section{Determination of Velocity of Propagation}
+
+The velocity of propagation of the signal can be calculated by the relation $v_p = \frac{\Delta L}{\Delta t}$, given that
+we are able to track the same point on the waveform at both places. Using the data from table 1,
+we get that the average velocity of propagation is $v_{p, \text{avg}} = 2.44 \cdot 10^8 \text{m/s}$.
 
 We know that the phase velocity of an electromagentic wave in space with magnetic permeability, $\mu$,
 and electric permittivitty, $\epsilon$  is given by: 
@@ -104,9 +150,14 @@ and electric permittivitty, $\epsilon$  is given by:
     v_p = \frac{1}{\sqrt{\mu \epsilon}}
 \]
 
-\section{Observation of Travelling Waves}
+\section{Simple Reflection}
 
-Testig data: voltage division. 
+We know that
+
+\section{Multiple Reflections}
+
+
+\section{Input Impedance and Transmission Line Length}
 
 \begin{figure}[h] \centering
     \begin{circuitikz} 
@@ -122,7 +173,7 @@ Testig data: voltage division.
         node[]{$\displaystyle{\tilde V_{\text{in}} = \tilde V_g\frac{Z_{\text{in}}}{Z_{\text{in}} + Z_g}}$} 
         (3.45, 2.4);
     \end{circuitikz}
-    \caption{Circuit setup }
+    \caption{Voltage division over net input impedance, $Z_\text{in}$}
     \label{volt_diag}
 \end{figure}
 
