@@ -41,15 +41,13 @@ are shown in Figure 1.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=5.49cm]{../photos/lab1/load_matched.jpg}
+    \includegraphics[width=6.54cm]{../photos/lab1/load_matched.jpg}
     \caption{Transmission line terminated with load equal to $Z_0$}
     \label{simulation_figure}
 \end{figure}
 
 
 \section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=0)}{\tilde I^+(z=0)}$}
-
-Find something below:
 
 \begin{figure}[!hb] \centering
     \begin{circuitikz} 
@@ -69,28 +67,29 @@ Find something below:
         \draw [dotted] (2,-0.35) -- (2,0.35) (7,-0.35) -- (7,0.35)
         (2, -0.5) node{$z=0$} (2, -0.35) (7, -0.5) node{$z=L$} (7, -0.35);
     \end{circuitikz}
-    \caption{Circuit setup }
+    \caption{Laborartory setup for studying characteristcs of tranmission lines}
     \label{tline_diag}
 \end{figure}
 
 As seen in the picture the voltage at $v_g$ is 154mV and $v_1$ is equal to 51mV. Assuming the resistance in between is $100\Omega$ 
 $i_l$ = $\frac{0.154-0.051}{100}$ = $1.03*10^-3$A. Which means $Z_0=\frac{v_1}{i_l}=\frac{0.051}{1.03*10^-3}=49.51\Omega~50\Omega $
 
-\begin{figure} \centering
+\begin{figure}[h] \centering
     \begin{circuitikz} 
         \draw [dotted][thick] (0,0) -- (0,2) (2,0) -- (2,2) (0, 2) -- (-1, 2) (2, 2) -- (3, 2);
-        \draw (0,1.5) to [R, l=$R_s$, i>^=$\tilde I$, *-*] (2, 1.5);
+        \draw (0,1.5) to [R, l=$R_{\text{shunt}}$, i>^=$\tilde I$, o-o] (2, 1.5);
         \draw (0,0.15) -- (2, 0.15);
-        \filldraw (0, 0.15) circle (1.5pt);
-        \filldraw (2, 0.15) circle (1.5pt);
         \draw (1, 0.15) to [short, *-*] node[ground]{} (1,0.15);
-
+        \draw (0,0.15) circle (1.5pt);
+        \draw (2,0.15) circle (1.5pt);
         \draw (2,0.15) -- (2.5,-0.15) to[sV, l_=$\tilde V_2$, color=white, name=CH2] (2.5,1.35) -- (2, 1.5);
         \oscope{CH2}{0}
         \draw (0,0.15) -- (-0.5,-0.15) to[sV, l=$\tilde V_1$, color=white, name=CH1] (-0.5,1.35) -- (0, 1.5);
         \oscope{CH1}{0}
+
+        \draw (4.75,1) node[]{$\displaystyle{\tilde I = \frac{\tilde V_1 - \tilde V_2}{R_{\text{shunt}}}}$} (4.75,1);
     \end{circuitikz}
-    \caption{Laborartory setup for studying characteristcs of tranmission lines}
+    \caption{Estimating input current through a shunt resistance}
     \label{shunt_diag}
 \end{figure}
 
@@ -119,9 +118,9 @@ Testig data: voltage division.
         \draw (2, 2) -- (2.25, 2.25);
         
         \draw 
-        (3.4, 2.4) 
-        node[]{$\tilde V_{\text{in}} = \tilde V_g\frac{Z_{\text{in}}}{Z_{\text{in}} + Z_g}$} 
-        (3.4, 2.4);
+        (3.45, 2.4) 
+        node[]{$\displaystyle{\tilde V_{\text{in}} = \tilde V_g\frac{Z_{\text{in}}}{Z_{\text{in}} + Z_g}}$} 
+        (3.45, 2.4);
     \end{circuitikz}
     \caption{Circuit setup }
     \label{volt_diag}
