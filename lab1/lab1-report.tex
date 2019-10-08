@@ -298,7 +298,7 @@ which $||\tilde V_\text{in}||$ achieved its minimum. These frequencies are liste
     \label{volt_diag}
 \end{figure}
 
-To explain this effect for the short circuited (zero) load, we know that $\Gamma_L = -1 \implies \phi_Gamma = \pi$ and the voltage along the transmission line is 
+To explain this effect for the short circuited (zero) load, we know that $\Gamma_L = -1 \implies \phi_\Gamma = \pi$ and the voltage along the transmission line is 
 $\tilde V(z) = \tilde V_0^+e^{-j\beta z}(1 + ||\Gamma_L|| e^{j2\beta z + j\phi_\Gamma})$. Thus, the voltage minimum occurs
 when $\phi_\Gamma + 2\beta z = (2k + 1)\pi, k \in \mathbb{Z}$. Since $\beta \propto \omega$, as we increase frequencies, there is a 
 change in $||\tilde V(z)||$. Also, since current $\tilde I = \frac{\tilde V_0}{Z_0}e^{-j\beta z}(1 - ||\Gamma||e^{j2\beta z + j\phi_\Gamma})$, there is a current maximum
@@ -313,7 +313,7 @@ To explain voltage minimum for the capacitive load, we know that net input imped
 Thus, at certain frequencies, when $Z_\text{in}$ is minimum, $||\tilde V_\text{in}||$ will also be minimum. To find frequencies at which this minimum will occur,
 we know that now $\Gamma = \frac{jX_c(\omega) - Z_0}{jX_c(\omega) + Z_0} = ||\Gamma||e^{j\phi_\Gamma}$. Here, we note that for a pure
 capacitive load $||\Gamma|| = 1$ and phase is a function of frequency, $\phi_\Gamma(\omega) = 2\arctan(\frac{10^8j}{50\omega})$ for $C = 0.01\mu F$, as opposed to the short circuited load where $\phi_\Gamma = \pi$.
-Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_\text{min}$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase
+Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_\text{min}$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase.
 
 \section{Notes}
 
