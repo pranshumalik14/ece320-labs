@@ -13,12 +13,37 @@
 \usetikzlibrary{arrows,shapes,calc,positioning}
 \usetikzlibrary{shapes}
 \usetikzlibrary{plotmarks}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{units}
 
 \newcommand{\oscope}[2] % #1 = name , #2 = rotation angle
 {
     \draw[thick,rotate=#2] (#1) circle (12pt)
     (#1) ++(-0.35,-0.1) -- ++(0.3,0.3) --++(0,-0.3)-- ++(0.3,0.3) --++(0,-0.3);
 }
+
+\pgfplotstableread{
+x   SC   UNKWN
+0   -70.430 -53.823
+5   -56.743 -53.384
+10  -51.003 -52.223
+15  -47.270 -50.688  
+20  -43.939 -49.049
+25  -43.110 -47.984
+30  -42.755 -47.163
+35  -42.707 -46.770
+40  -42.797 -46.310
+45  -43.461 -46.294
+50  -44.326 -46.392
+55  -46.781 -46.920
+60  -47.946 -47.690
+65  -51.511 -48.500
+70  -57.215 -49.421
+75  -70.787 -50.184
+80  -60.603 -49.948
+}\wavform
 
 \vspace{-8ex}
 \date{}
@@ -48,6 +73,53 @@ are shown in Figure 1.
     \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
     \label{tline_matching_z_0}
 \end{figure}
+
+\begin{figure}[ht]
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
+            ylabel=Magnitude of Electric Field in dB,
+            legend style={at={(0.5,-0.2)},anchor=north},
+            x tick label style={rotate=90,anchor=east}
+          ]
+          \addplot 
+          % add a plot from table; you select the columns by using the actual name in
+          % the .csv file (on top)
+          table[x=x,y=SC,col sep=tab] {\wavform}; 
+          \legend{short circuit}
+        \end{axis}
+      \end{tikzpicture}
+      \caption{volt plot}
+    \end{center}
+  \end{figure}
+
+
+  \begin{figure}[ht]
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            grid=major, 
+            grid style={dashed,gray!30},
+            xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
+            ylabel=Magnitude of Electric Field in dB,
+            legend style={at={(0.5,-0.2)},anchor=north},
+            x tick label style={rotate=90,anchor=east}
+          ]
+          \addplot 
+          % add a plot from table; you select the columns by using the actual name in
+          % the .csv file (on top)
+          table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
+          \legend{unkown load}
+        \end{axis}
+      \end{tikzpicture}
+      \caption{volt plot 2}
+    \end{center}
+  \end{figure}
 
 % \section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)}$}
 
