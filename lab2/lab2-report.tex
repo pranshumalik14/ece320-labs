@@ -61,13 +61,25 @@ as well as its depedance on the nature of load impedance.
 
 \section{Measurement of Microstrip Line Characteristics}
 
-We varied the load on the switch box until we saw little or no traces of reflected waves.
-This was at $Z_L = 50 \Omega$ which is also equal to the charactertic impedance 
-since we know that the reflections nullify when $Z_L = Z_0$. The corresponding waveforms
-captured at the generator input (channel 1, top) and the transmission line input (channel 2, bottom) 
-are shown in Figure 1.
+We know that since the wave travels in a compound medium: the PCB substrate and the air, we will have 
+to consider an effective epsilon, given by:
+\[
+    \epsilon_{\text{eff}} = \frac{\epsilon_r+1}{2}+\left(\frac{\epsilon_r-1}{2}\right)\left(1+\frac{10}{s}\right)^{-xy}
+\]
+where $s = \frac{w}{h}$ and:
+\begin{align*}
+    x &= 0.56\left(\frac{\epsilon_r-0.9}{\epsilon_r+3}\right)^{0.05}\\
+    y &= 1 + 0.02\ln{\left(\frac{s^4+3.7\cdot10^{-4}s^2}{s^4 + 0.43}\right)} + 0.05\ln{\left(1 + 1.7\cdot10^{-4}s^3\right)}
+\end{align*}
 
-\begin{figure}[h]
+The characteristic impedance of a microstrip line can also be found using empiral formulae, such as:
+
+\begin{align*}
+    Z_0 &= \frac{60}{\sqrt{\epsilon_{\text{eff}}}}\ln{\left(\frac{6 + (2\pi - 6)e^{-t}}{s} + \sqrt{1 + \frac{4}{s^2}}\right)}\\
+    t &= \left(\frac{30.65}{s}\right)^{0.75}
+\end{align*}
+
+\begin{figure}
     \centering
     \includegraphics[width=0.45\textwidth]{../photos/lab2/unkwn-load.jpg}
     \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
@@ -75,7 +87,31 @@ are shown in Figure 1.
 \end{figure}
 
 \begin{figure}[ht]
-    \begin{center}
+  \centering
+  \begin{subfigure}[b]{0.5\textwidth}
+      % \resizebox{0.5\textwidth}{!}{
+        \begin{tikzpicture}
+          \begin{axis}[
+              width=\linewidth, % Scale the plot to \linewidth
+              grid=major, 
+              grid style={dashed,gray!30},
+              xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
+              ylabel=Magnitude of Electric Field in dB,
+              legend style={at={(0.90,0.95)},anchor=north},
+              x tick label style={rotate=90,anchor=east}
+            ]
+            \addplot +[black,mark options={fill=black}]
+            % add a plot from table; you select the columns by using the actual name in
+            % the .csv file (on top)
+            table[x=x,y=SC,col sep=tab] {\wavform}; 
+            \legend{short circuit}
+          \end{axis}
+        \end{tikzpicture}
+      % }
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{0.5\textwidth}
+    % \resizebox{0.5\textwidth}{!}{
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -83,43 +119,68 @@ are shown in Figure 1.
             grid style={dashed,gray!30},
             xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
             ylabel=Magnitude of Electric Field in dB,
-            legend style={at={(0.5,-0.2)},anchor=north},
+            legend style={at={(0.90,0.95)},anchor=north},
             x tick label style={rotate=90,anchor=east}
           ]
-          \addplot 
-          % add a plot from table; you select the columns by using the actual name in
-          % the .csv file (on top)
-          table[x=x,y=SC,col sep=tab] {\wavform}; 
-          \legend{short circuit}
-        \end{axis}
-      \end{tikzpicture}
-      \caption{volt plot}
-    \end{center}
-  \end{figure}
-
-
-  \begin{figure}[ht]
-    \begin{center}
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=\linewidth, % Scale the plot to \linewidth
-            grid=major, 
-            grid style={dashed,gray!30},
-            xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
-            ylabel=Magnitude of Electric Field in dB,
-            legend style={at={(0.5,-0.2)},anchor=north},
-            x tick label style={rotate=90,anchor=east}
-          ]
-          \addplot 
+          \addplot +[black,mark options={fill=black}]
           % add a plot from table; you select the columns by using the actual name in
           % the .csv file (on top)
           table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
           \legend{unkown load}
         \end{axis}
       \end{tikzpicture}
-      \caption{volt plot 2}
-    \end{center}
-  \end{figure}
+    % }
+  \end{subfigure}
+  \caption{Volt Plots}
+  \label{VNA_waveforms}
+\end{figure}
+
+% \begin{figure}[ht]
+%       % \resizebox{0.5\textwidth}{!}{
+%         \begin{tikzpicture}
+%           \begin{axis}[
+%               width=\linewidth, % Scale the plot to \linewidth
+%               grid=major, 
+%               grid style={dashed,gray!30},
+%               xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
+%               ylabel=Magnitude of Electric Field in dB,
+%               legend style={at={(0.85,0.92)},anchor=north},
+%               x tick label style={rotate=90,anchor=east}
+%             ]
+%             \addplot 
+%             % add a plot from table; you select the columns by using the actual name in
+%             % the .csv file (on top)
+%             table[x=x,y=SC,col sep=tab] {\wavform}; 
+%             \legend{short circuit}
+%           \end{axis}
+%         \end{tikzpicture}
+%       % }
+%       \caption{volt plot}
+%   \end{figure}
+
+
+%   \begin{figure}[ht]
+%       % \resizebox{0.5\textwidth}{!}{
+%         \begin{tikzpicture}
+%           \begin{axis}[
+%               width=\linewidth, % Scale the plot to \linewidth
+%               grid=major, 
+%               grid style={dashed,gray!30},
+%               xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
+%               ylabel=Magnitude of Electric Field in dB,
+%               legend style={at={(0.85,0.92)},anchor=north},
+%               x tick label style={rotate=90,anchor=east}
+%             ]
+%             \addplot 
+%             % add a plot from table; you select the columns by using the actual name in
+%             % the .csv file (on top)
+%             table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
+%             \legend{unkown load}
+%           \end{axis}
+%         \end{tikzpicture}
+%       % }
+%       \caption{volt plot 2}
+%   \end{figure}
 
 % \section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)}$}
 
@@ -191,23 +252,23 @@ Observed waveforms at different points on the transmission line can be found in 
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab2/short-cir-peak.jpg}
-        \caption{Port C $(0\text{m})$}
+        \caption{Short circuit maximum}
     \end{subfigure}
     \quad
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab2/short-cir-valley.jpg}
-        \caption{Port D $(30\text{m})$}
+        \caption{Short circuit minimum}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-peak.jpg}
-        \caption{Port E $(60\text{m})$}
+        \caption{Unknown load maximum}
     \end{subfigure}
     \quad
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-valley.jpg}
-        \caption{Port F $(90\text{m})$}
+        \caption{Unknown load minimum}
     \end{subfigure}
-    \caption{Measured $V(t)$ at different loactions along the transmission line with $Z_L = Z_0$ \vspace{-0.5cm}}
+    \caption{Measured peak and minimum values of standing wave pattern \vspace{-0.5cm}}
     \label{v_t_matched_tline}
 \end{figure}
 
