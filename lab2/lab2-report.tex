@@ -15,6 +15,11 @@
 \usetikzlibrary{plotmarks}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{xparse}
+\usetikzlibrary{decorations.markings,positioning}
+\definecolor{whitesmoke}{rgb}{0.90, 0.90, 0.90}
+\definecolor{lightgray}{rgb}{0.73, 0.73, 0.73}% overrides default?
+\definecolor{dimgray}{rgb}{0.51, 0.51, 0.51}
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{units}
 
@@ -22,6 +27,16 @@
 {
     \draw[thick,rotate=#2] (#1) circle (12pt)
     (#1) ++(-0.35,-0.1) -- ++(0.3,0.3) --++(0,-0.3)-- ++(0.3,0.3) --++(0,-0.3);
+}
+\pgfarrowsdeclarecombine{dimarrow}{dimarrow}{latex}{latex}{}{}
+\NewDocumentCommand\Dimline { m m o } {
+  \draw[|-|, thick, shorten >=-.5\pgflinewidth, shorten <=-.5\pgflinewidth,
+  decoration={markings, % switch on markings
+    mark=at position 0 with {\arrowreversed[scale=0.5]{dimarrow}};,
+    mark=at position .5 with {\IfValueT{#3}{\node [black, fill=white] {#3};}},
+    mark=at position 1 with {\arrow[scale=0.5]{dimarrow}};,
+  },
+  postaction=decorate] #1 -- #2 ;
 }
 
 \pgfplotstableread{
@@ -56,17 +71,49 @@ x   SC   UNKWN
 
 \section{Introduction}
 
-This laboratory focused on investigating the (voltage) wave propagation in a microstrip transmission lines, 
-as well as its depedance on the nature of load impedance.
+This laboratory session was focused on investigating the voltage standing wave (VSW) pattern along a microstrip transmission line, 
+as well as its depedance on the load impedance. Figure 1 shows the diagram of a microstrip line that sits on the PCB substrate at the bottom and free
+space (or air) above, due to which the voltage wave effectively travels through $\epsilon_\text{eff}\epsilon_0$. We measure the fringing electric field 
+using a probe, acting as a monopole antenna, at the top of the strip. Since the measured, vertically oriented, electric field is proportional to 
+the voltage at that position we are able to determine the VSW pattern along the line.
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \draw [lightgray] (0,1,0) coordinate (bl) -- (5,1,0) coordinate (br);
+    \filldraw [whitesmoke] (0,0,5) coordinate (fll) -- (0,1,5) coordinate (ftl) -- (5,1,5) coordinate (ftr) -- (5,0,5) coordinate (flr) -- cycle;
+    \shade [left color = whitesmoke, right color = lightgray] (bl) -- (br) -- (ftr) -- (ftl) -- cycle;
+    \filldraw [dimgray] (5,0,0) coordinate (blr) -- (flr) -- (ftr) -- (br);
+    \filldraw [lightgray] (fll) rectangle (5,-0.2,5) coordinate (flr2);
+    \filldraw [darkgray] (flr2) -- (5,-0.2,0) coordinate (blr2) -- (blr) -- (flr) -- cycle;
+    \filldraw [lightgray] (1.5,1.2,5) coordinate (ftl-1) -- (3.5,1.2,5) coordinate (ftr-1) -- (3.5,1,5) coordinate (flr-1) -- (1.5,1,5) coordinate (fll-1) -- cycle;
+    \shade [left color = whitesmoke!50, right color = whitesmoke] (1.5,1.2,0) coordinate (btl-1) -- (3.5,1.2,0) coordinate (btr-1) -- (ftr-1) -- (ftl-1) -- cycle;
+    \filldraw [lightgray] (flr-1) -- (ftr-1) -- (btr-1) --  (br -| btr-1) -- cycle;
+    \node at (4,0.5,5) {$\epsilon_\text{eff}$};
+    \coordinate (nA1) at (1.5,2.5,0);
+    \coordinate (nB1) at (3.5,2.5,0);
+    \coordinate (nA2) at (-1.5,1.2,0);
+    \coordinate (nB2) at (-1.5,1.2,5);
+    \coordinate (nA3) at (3,1,5);
+    \coordinate (nB3) at (3,1.2,5);
+    \coordinate (nA4) at (-1.5,1,5);
+    \coordinate (nB4) at (-1.5,0,5);
+    \Dimline{(nA1)}{(nB1)}[$w$];
+    \Dimline{(nA2)}{(nB2)}[$l$];
+    \Dimline{(nA4)}{(nB4)}[$h$];
+    \draw [densely dashed, help lines, blend mode=color dodge]  (nB4) -- (flr) (btr-1) -- (nA2)  (nB2) -- (nB3)  (nA4) -- (nA3) (nA1) -- (btl-1) (nB1) -- (btr-1 |- br);
+  \end{tikzpicture}
+  \caption{A microstrip transmission line\vspace{-0.5cm}}
+\end{figure}
 
 \section{Measurement of Microstrip Line Characteristics}
 
-We know that since the wave travels in a compound medium: the PCB substrate and the air, we will have 
-to consider an effective epsilon, given by:
+We know that since the wave travels in a compound medium -- the PCB substrate and the air -- we will have 
+to consider an effective dielectric constant dependant on the geometry as well as the substrate parameters. It has been
+found that this is best described using a combination of conformal mapping and empiral formulae, which are:
 \[
     \epsilon_{\text{eff}} = \frac{\epsilon_r+1}{2}+\left(\frac{\epsilon_r-1}{2}\right)\left(1+\frac{10}{s}\right)^{-xy}
 \]
-where $s = \frac{w}{h}$ and:
+where $s = \frac{w}{h}$ and
 \begin{align*}
     x &= 0.56\left(\frac{\epsilon_r-0.9}{\epsilon_r+3}\right)^{0.05}\\
     y &= 1 + 0.02\ln{\left(\frac{s^4+3.7\cdot10^{-4}s^2}{s^4 + 0.43}\right)} + 0.05\ln{\left(1 + 1.7\cdot10^{-4}s^3\right)}
@@ -75,385 +122,154 @@ where $s = \frac{w}{h}$ and:
 The characteristic impedance of a microstrip line can also be found using empiral formulae, such as:
 
 \begin{align*}
-    Z_0 &= \frac{60}{\sqrt{\epsilon_{\text{eff}}}}\ln{\left(\frac{6 + (2\pi - 6)e^{-t}}{s} + \sqrt{1 + \frac{4}{s^2}}\right)}\\
-    t &= \left(\frac{30.65}{s}\right)^{0.75}
+    Z_0 &= \frac{60}{\sqrt{\epsilon_{\text{eff}}}}\ln{\left(\frac{6 + (2\pi - 6)e^{-t}}{s} + \sqrt{1 + \frac{4}{s^2}}\right)}
+\end{align*}
+where
+\begin{align*}
+  t &= \left(\frac{30.65}{s}\right)^{0.75}
 \end{align*}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.45\textwidth]{../photos/lab2/unkwn-load.jpg}
-    \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
-    \label{tline_matching_z_0}
-\end{figure}
+We measured the width of the microstrip line and used the above formulae to calculate the theoretical values of the
+characteristic impedance, effective dielectric constant, the phase velocity of the voltage wave, its wavelength at $f = 1 \text{ GHz}$, 
+the reflection coefficient at the short circuit load, and the voltage standing wave ratio (VSWR). The results can be found below in table 1.
+
+\begin{table}[h]
+  \[
+      \begin{array}{c|c}
+          \textbf{Parameter} & \textbf{Value} \\ \hline
+          w & 0.3 \text{ cm}\\
+          Z_0 & 48.697\Omega\\
+          \epsilon_\text{eff} & 3.347\\
+          v_p & 1.639\cdot10^8\text{ m}/\text{s}\\
+          \lambda & 0.163 \text{ m}\\
+          \Gamma_L & -1\\
+          \text{VSWR} & \infty
+      \end{array}
+  \]
+  \caption{Theoretically calculated parameters of the microstrip transmission line\vspace{-0.2cm}}
+\end{table}
+
+Using the vector network analyzer (VNA) in the lab, we sampled the magnitude of the electric field every 5 mm, starting at 
+the location of the first minimum magnitude $d_\text{min}$. The experimental SWR pattern can be found in figure 2.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}[b]{0.5\textwidth}
-      % \resizebox{0.5\textwidth}{!}{
-        \begin{tikzpicture}
-          \begin{axis}[
-              width=\linewidth, % Scale the plot to \linewidth
-              grid=major, 
-              grid style={dashed,gray!30},
-              xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
-              ylabel=Magnitude of Electric Field in dB,
-              legend style={at={(0.90,0.95)},anchor=north},
-              x tick label style={rotate=90,anchor=east}
-            ]
-            \addplot +[black,mark options={fill=black}]
-            % add a plot from table; you select the columns by using the actual name in
-            % the .csv file (on top)
-            table[x=x,y=SC,col sep=tab] {\wavform}; 
-            \legend{short circuit}
-          \end{axis}
-        \end{tikzpicture}
-      % }
-  \end{subfigure}
-  
-  \begin{subfigure}[b]{0.5\textwidth}
-    % \resizebox{0.5\textwidth}{!}{
-      \begin{tikzpicture}
-        \begin{axis}[
-            width=\linewidth, % Scale the plot to \linewidth
-            grid=major, 
-            grid style={dashed,gray!30},
-            xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
-            ylabel=Magnitude of Electric Field in dB,
-            legend style={at={(0.90,0.95)},anchor=north},
-            x tick label style={rotate=90,anchor=east}
-          ]
-          \addplot +[black,mark options={fill=black}]
-          % add a plot from table; you select the columns by using the actual name in
-          % the .csv file (on top)
-          table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
-          \legend{unkown load}
-        \end{axis}
-      \end{tikzpicture}
-    % }
-  \end{subfigure}
-  \caption{Volt Plots}
-  \label{VNA_waveforms}
+  \resizebox{0.55\textwidth}{!}{
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth, % Scale the plot to \linewidth
+          grid=major, 
+          grid style={dashed,gray!30},
+          xlabel={Distance from first minimum, $d_{\text{min}}$, in mm},
+          ylabel=Electric field strength in dB,
+          legend style={at={(0.8,0.95)},anchor=north},
+          x tick label style={rotate=90,anchor=east}
+        ]
+        \addplot +[black,mark options={fill=black}]
+        table[x=x,y=SC,col sep=tab] {\wavform}; 
+        \legend{log-mag for short circuit load}
+      \end{axis}
+    \end{tikzpicture}
+  }
+  \caption{VSW pattern for a shorted load on the microstrip line\vspace{-0.3cm}}
+  \label{VNA_log_mag_shorted}
 \end{figure}
 
-% \begin{figure}[ht]
-%       % \resizebox{0.5\textwidth}{!}{
-%         \begin{tikzpicture}
-%           \begin{axis}[
-%               width=\linewidth, % Scale the plot to \linewidth
-%               grid=major, 
-%               grid style={dashed,gray!30},
-%               xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
-%               ylabel=Magnitude of Electric Field in dB,
-%               legend style={at={(0.85,0.92)},anchor=north},
-%               x tick label style={rotate=90,anchor=east}
-%             ]
-%             \addplot 
-%             % add a plot from table; you select the columns by using the actual name in
-%             % the .csv file (on top)
-%             table[x=x,y=SC,col sep=tab] {\wavform}; 
-%             \legend{short circuit}
-%           \end{axis}
-%         \end{tikzpicture}
-%       % }
-%       \caption{volt plot}
-%   \end{figure}
+Using the data in figure 2, we know that
+\[||\tilde V_\text{max}|| = k\cdot ||\tilde E_\text{max}|| = k\cdot 10^{-\frac{42.707}{20}} = k\cdot 0.00732\]
+Similarly,
+  \[ || \tilde V_\text{min}|| = k\cdot 10^{-\frac{70.430}{20}} = k\cdot 0.00030\]
+Thus,
+  \[\text{VSWR} := \frac{||\tilde V_\text{max}||}{||\tilde V_\text{max}||} = 24.330\]
 
+Although here the VSWR is large, it is still very small compared to the theoretical value of $\infty$. But to
+show that our measurements are still accurate, we can show that the corresponding value of reflection coefficient
+at the load, $||\Gamma_L|| = \frac{\text{VSWR}-1}{\text{VSWR}+1} = 0.921 \approx 1$ is close to the theoretical value of 1.
 
-%   \begin{figure}[ht]
-%       % \resizebox{0.5\textwidth}{!}{
-%         \begin{tikzpicture}
-%           \begin{axis}[
-%               width=\linewidth, % Scale the plot to \linewidth
-%               grid=major, 
-%               grid style={dashed,gray!30},
-%               xlabel=Distance from first minimum $d_{\text{min}}$, % Set the labels
-%               ylabel=Magnitude of Electric Field in dB,
-%               legend style={at={(0.85,0.92)},anchor=north},
-%               x tick label style={rotate=90,anchor=east}
-%             ]
-%             \addplot 
-%             % add a plot from table; you select the columns by using the actual name in
-%             % the .csv file (on top)
-%             table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
-%             \legend{unkown load}
-%           \end{axis}
-%         \end{tikzpicture}
-%       % }
-%       \caption{volt plot 2}
-%   \end{figure}
-
-% \section[Determining Z0 using V/I]{Determining $Z_0$ using $\frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)}$}
-
-% \begin{figure}[ht] \centering
-%     \begin{circuitikz} 
-%         \draw
-%         (0,2) to [sqV, l_=$\tilde V_g$] (0, 0) -- (2,0)
-%         to [tline, l_=Transmission Line, o-o] (7,0)
-%         to [R, l=$Z_L$] (7, 2)
-%         to [tline, l=${Z_0, \beta, L}$, o-o] (2,2)
-%         to [R, l_=$Z_g$, i<^=$\tilde I$] (0, 2);
-        
-%         \draw (2,2.35) node{$\tilde V$} (2, 2);
-%         \draw (2,0) -- (2.5,-0.15) to[sV, l_=\footnotesize{CH1}, color=white, name=CH1] (2.5,1.75) -- (2, 2);
-%         \oscope{CH1}{0}
-%         \draw (7,0) -- (8,-0.15) to[sV, l_=\footnotesize{CH2}, color=white, name=CH2] (8,1.75) -- (7, 2);
-%         \oscope{CH2}{0}
-%         \draw (0,0) to[short, *-*] node[ground]{} (0,0);
-%         \draw [dotted] (2,-0.35) -- (2,0.35) (7,-0.35) -- (7,0.35)
-%         (2.1, -0.5) node{$z=-L$} (2, -0.35) (7, -0.5) node{$z=0$} (7, -0.35);
-%     \end{circuitikz}
-%     \caption{Laborartory setup for studying characteristcs of tranmission lines\vspace{-0.5cm}}
-%     \label{tline_diag}
-% \end{figure}
-
-% \begin{figure}[ht]
-%     \centering
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/shunt_delta_v_1.jpg}
-%         \caption{$\tilde V_1 \approx 154\text{mV}$}
-%     \end{subfigure}
-%     \quad
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/shunt_delta_v_2.jpg}
-%         \caption{$\tilde V_2 \approx 51\text{mV}$}
-%     \end{subfigure}
-%     \caption{$\tilde V$ measured across $R_\text{shunt} = 100\Omega$\vspace{-0.5cm}}
-%     \label{delta_v_shunt}
-% \end{figure}
-
-% As seen in Figure 3, the voltage at $\tilde V_1 = 154\text{mV}$ and $\tilde V_2 = 51\text{mV}$. Given the value of $R_\text{shunt} = 100\Omega$,
-% we can calculate $\tilde I^+ = \frac{0.154-0.051}{100} = 1.03\text{mA}$. From Figure 4, we can see that $\tilde V_2 = \tilde V^+$, and therefore we can confirm the
-% value of $Z_0$ through the relation, $Z_0 := \frac{\tilde V^+(z=-L)}{\tilde I^+(z=-L)} = \frac{51\text{mV}}{1.03\text{mA}} = 49.51\Omega \approx 50\Omega$.
-
-% \begin{figure}[h] \centering
-%     \begin{circuitikz} 
-%         \draw [dotted][thick] (0,0) -- (0,2) (2,0) -- (2,2) (0, 2) -- (-1, 2) (2, 2) -- (3, 2);
-%         \draw (0,1.5) to [R, l=$R_{\text{shunt}}$, i>^=$\tilde I$, *-*] (2, 1.5);
-%         \draw (0,0.15) -- (2, 0.15);
-%         \draw (1, 0.15) to [short, *-*] node[ground]{} (1,0.15);
-%         \draw (0,0.15) circle (1.5pt);
-%         \draw (2,0.15) circle (1.5pt);
-%         \draw (2,0.15) -- (2.5,-0.15) to[sV, l_=$\tilde V_2$, color=white, name=CH2] (2.5,1.35) -- (2, 1.5);
-%         \oscope{CH2}{0}
-%         \draw (0,0.15) -- (-0.5,-0.15) to[sV, l=$\tilde V_1$, color=white, name=CH1] (-0.5,1.35) -- (0, 1.5);
-%         \oscope{CH1}{0}
-
-%         \draw (4.75,1) node[]{$\displaystyle{\tilde I = \frac{\tilde V_1 - \tilde V_2}{R_{\text{shunt}}}}$} (4.75,1);
-%     \end{circuitikz}
-%     \caption{Estimating input current through a shunt resistance \vspace{-0.5cm}}
-%     \label{shunt_diag}
-% \end{figure}
+We also measured that two consecutive voltage minimums were $\approx 8 \text{ cm}$ apart, thus giving us the wavelength 
+of the voltage wave $\frac{\lambda}{2} = 8\text{ cm} \implies \lambda = 16\text{ cm} \approx 16.3\text{ cm}$, since the wavelength 
+observed in the SWR pattern is half of the wave's wavelength. Using the above result for wavelength and the chosen frequency of 1 GHz, we get 
+$v_p = 1.6\cdot10^8 \text{ m/s} = \frac{c}{\sqrt{\epsilon_\text{eff}}} \implies \epsilon_\text{eff} = 3.511 \approx 3.347$. 
+Thus, our measurements do closely match the theoretical results for all the parameters.
 
 \section{Using Standing Wave Patterns for Load Calculations}
 
 Observed waveforms at different points on the transmission line can be found in Figure 5.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{../photos/lab2/short-cir-peak.jpg}
-        \caption{Short circuit maximum}
-    \end{subfigure}
-    \quad
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{../photos/lab2/short-cir-valley.jpg}
-        \caption{Short circuit minimum}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-peak.jpg}
-        \caption{Unknown load maximum}
-    \end{subfigure}
-    \quad
-    \begin{subfigure}[b]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-valley.jpg}
-        \caption{Unknown load minimum}
-    \end{subfigure}
-    \caption{Measured peak and minimum values of standing wave pattern \vspace{-0.5cm}}
-    \label{v_t_matched_tline}
+\begin{figure}[hb]
+  \centering
+  \includegraphics[width=0.45\textwidth]{../photos/lab2/unkwn-load.jpg}
+  \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
+  \label{tline_matching_z_0}
 \end{figure}
 
-% The recorded time delays, $\Delta t$, relative to the input signal are listed in Table 1.
-
-% \begin{table}[h]
-%     \[
-%         \begin{array}{c|c}
-%             \textbf{Port} & \Delta t \textbf{ (ns)} \\ \hline
-%             \text{D} & 130\\
-%             \text{E} & 244\\
-%             \text{F} & 368
-%         \end{array}
-%     \]
-%     \caption{Recorded time delay at different locations along the transmission line\vspace{-0.5cm}}
-% \end{table}
-
-% \section{Determining Velocity of Propagation}
-
-% The velocity of propagation of the signal can be calculated by the relation $v_p = \frac{\Delta L}{\Delta t}$, given that
-% we are able to track the same point on the waveform. Using the data from Table 1,
-% we get that the average velocity of propagation is $v_{p, \text{avg}} = 2.44 \cdot 10^8 \text{m/s}$.
-
-% Now, to find the relative permittivity, we also know that the phase velocity of an electromagentic wave in an electrical transmission line with magnetic permeability, $\mu \approx \mu_0$,
-% and electric permittivity, $\epsilon = \epsilon_r \epsilon_0$,  is given by: 
-
-% \[
-%     v_p = \frac{1}{\sqrt{\mu \epsilon}} \implies \frac{v_p}{c} \approx 
-%     \sqrt{\frac{\mu_0\epsilon_0}{\mu_0\epsilon_0\epsilon_r}} \implies 
-%     \epsilon_r \approx \frac{c^2}{v_p^2} \approx 1.51
-% \]
-
-% The theoretical $V(t)$ plots in Figure 6 closely match the observations in Figure 5.
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=0.45\textwidth]{../photos/lab1/v_t_bounce_no_reflection.jpg}
-%     \caption{Theoretical bounce diagram and $V(t)$ plots along the transmission line\vspace{-0.5cm}}
-%     \label{v_t_bounce_no_reflection}
-% \end{figure}
-
-% \section{Simple Reflection}
-
-% For an input pulse signal, the magnitude of the first voltage pulse across the transmission line input will always be $\tilde V^+_1 = \tilde V_g\frac{Z_0}{Z_0+Z_g}$, regardless of $Z_L$. There will be a load mismatch if $Z_L \neq Z_0$ and we know that, in this case, reflection of current and
-% voltage occurs at the load, i.e. $\tilde V^- \neq 0$ and $\tilde I^- \neq 0$. The load reflection coefficient, $\Gamma_L$,
-% if defined as:
-% \[
-%     \Gamma_L := \frac{\tilde V^-}{\tilde V^+} = \frac{Z_L - Z_0}{Z_L + Z_0}
-% \]
-
-% Thus, in cases where there is a load mismatch, $\Gamma_L \neq 0$, there will be a relection of intensity $\tilde V^- = \Gamma_L\tilde{V^+}$ along the 
-% transmission line towards the generator and the steady state for a step input will be achieved after the voltage and current 
-% wave has travelled back and forth once, and this can also be verified using a bounce diagram. The Theoretically for $Z_L = 100\Omega$, $\Gamma_L = \frac{50\Omega}{150\Omega} = \frac{1}{3} $ and through the measurements, we observe the reflection 
-% coefficient $\Gamma_L = \frac{30\text{mV}}{100\text{mV}} = \frac{3}{10} \approx \frac{1}{3}$.
-
-% The measurements for reflected voltage waves can be found in Figure 7. Channel 1 (top) waveform has been 
-% recorded at port C ($0\text{m}$) and channel 2 (bottom) waveform has been recorded at port F ($90\text{m}$).
-% The pulsewidth $\tau$ of the signal was set such that it was equal to the time delay $T$ for a pulse to reach
-% port F from port C, which made the signal recordings at port C and F exactly out of phase. In terms of magnitude, the
-% signal at port F was a superposition of the incident and reflected wave $\tilde V_F = \tilde V^+ + \Gamma_L\tilde V^+$.
-% Similarly at port C, the signal at $t \in (2T, 3T)$, $\tilde V_C = \Gamma_L\tilde V^+ = \tilde V^-$, which can all again
-% be verified using a bounce diagram. The theoretical $V(d)$ graphs for different time points can be found in Figure 8.
-
-% \begin{figure}[ht]
-%     \centering
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_L_1.jpg}
-%         \caption{$\tilde V_1 = \tilde V^+ \approx 100\text{mV}$}
-%     \end{subfigure}
-%     \quad
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_L_2.jpg}
-%         \caption{$\tilde V_2 = \Gamma_L\tilde V^+ = \tilde V^- \approx 30\text{mV}$}
-%     \end{subfigure}
-%     \caption{$\tilde V$ measured at port C and port F for input signal with pulsewidth $\tau = T$\vspace{-0.5cm}}
-%     \label{v_t_c_f}
-% \end{figure}
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=0.45\textwidth]{../photos/lab1/v_d_gamma_L.jpg}
-%     \caption{$V(d)$ plots at different time points\vspace{-0.5cm}}
-%     \label{v_d_different_T}
-% \end{figure}
-
-% \section{Multiple Reflections}
-
-% For mismatched generator side, $Z_g = 150\Omega$, as well as the load side, $Z_L = 20\Omega$, there will 
-% be reflections on both ends of the transmission line. The observed waveforms can be found in Figure 9, with channel 1 (top) recording
-% signals at port C and channel 2 (bottom) recording signals at port F.
-
-% \begin{figure}[ht]
-%     \centering
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_mult_1T.jpg}
-%         \caption{$\tau = T$}
-%     \end{subfigure}
-%     \quad
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \includegraphics[width=\textwidth]{../photos/lab1/v_t_gamma_mult_10T.jpg}
-%         \caption{$\tau = 10T$}
-%     \end{subfigure}
-%     \caption{Multiply reflected signals for input signal with different pulsewidths\vspace{-0.4cm}}
-%     \label{v_t_ref_mult}
-% \end{figure}
-
-% At the generator end of the transmission line, $\Gamma_g = \frac{100 \Omega}{200 \Omega} = \frac{1}{2}$, and
-% at the load end $\Gamma_L = \frac{-30 \Omega}{70 \Omega} = \frac{-3}{7}$. In Figure 9 (a), we measure
-% $\tilde V^+ = \tilde V_1^+ = 51.5\text{mV}$ on channel 1 for $t \in (0, T)$, whereas on channel 2 for $t \in (T, 2T)$, we measure $\tilde V = \tilde V^+ + \tilde V^- = 29\text{mV}$.
-% This implies that $\tilde V^- = \Gamma_L\tilde V^+ = 29 - 51.5\text{mV} = -22.5\text{mV}$. Therefore, the observed 
-% $\Gamma_L = \frac{\tilde V^-}{\tilde V^+} = \frac{-22.5\text{mV}}{51.5\text{mV}} = -0.437 \approx \frac{-3}{7}$. Similarly, in Figure 9 (a), 
-% we measure $\tilde V = \Gamma_L\tilde V_1^+ + \Gamma_g\Gamma_L\tilde V^+_1 = -32\text{mV}$ at port C (channel 1) for $t \in (2T, 3T)$.
-% Here we use the previous measurement of $\Gamma_L = -0.437$, we measure $\Gamma_g = 0.42 \approx \frac{1}{2}$. Thus, both of our 
-% measurements closely match the theoretical values for the reflection coefficients.
-
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{../photos/lab1/v_t_bounce_mult_ref.jpg}
-%     \caption{Theoretical bounce diagrams and $V(t)$ plots for $\tau = T$ and $\tau = 10T$\vspace{-0.5cm}}
-%     \label{v_t_bounce_mult}
-% \end{figure}
-
-% Theoretical bounce diagrams and $V(t)$ plots for signals observed at ports C and F can be found in Figure 10. In Figures 9 and 10, 
-% we observe such behavior of pulses because the input pulse creates a reflection at the load which comes back to the source; however,
-% when the reflection reaches the source, it is also being reflected and, thus, the source and load in this setup 
-% keep the pulse bouncing back and forth until it completely dies out beacuse of resistive losses along the transmission line.
+\begin{figure}[ht]
+  \centering
+  \resizebox{0.55\textwidth}{!}{
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth, % Scale the plot to \linewidth
+          grid=major, 
+          grid style={dashed,gray!30},
+          xlabel={Distance from first minimum, $d_{\text{min}}$, in mm},
+          ylabel=Electric field strength in dB,
+          legend style={at={(0.8,0.95)},anchor=north},
+          x tick label style={rotate=90,anchor=east}
+        ]
+        \addplot +[black,mark options={fill=black}]
+        table[x=x,y=UNKWN,col sep=tab] {\wavform}; 
+        \legend{log-mag for unknown load}
+      \end{axis}
+    \end{tikzpicture}
+  }
+  \caption{VSW pattern for an unknown load on the microstrip line}
+  \label{VNA_log_mag_unknown}
+\end{figure}
 
 
-% \section{Input Impedance and Transmission Line Length}
+\begin{figure}[h]
+  \centering
+  \begin{picture}(200,200)
+    \put(0,0) {\includegraphics[width=0.6\textwidth]{../photos/lab2/smith-chart.png}}
+    \put(10,10){hello}
+  \end{picture}
+  \caption{Comparison of measured and calculated imepedance}
+\end{figure}
 
-% While sweeping the input sinusoid frequency from 1MHz to 4MHz, we recorded the frequencies at 
-% which $||\tilde V_\text{in}||$ achieved its minimum. These frequencies are listed in Table 2.
-% \begin{table}[ht]
-%     \[
-%         \begin{array}{c|c}
-%             f_\text{min} \textbf{ Shorted} &  f_\text{min} \textbf{ Capacitive} \\ \hline
-%             1.4 & 1.6\\
-%             2.8 & 3.0\\
-%             4.0 & 4.2
-%         \end{array}
-%     \]
-%     \caption{Corresponding $f_\text{min}$ for minimum $\tilde V_\text{in}$ for zero and capacitive loads in $\text{MHz}$\vspace{-0.5cm}}
-% \end{table}
-
-% \begin{figure}[ht] \centering
-%     \begin{circuitikz} 
-%         \draw
-%         (0, 2) to [V, l_=$\tilde V_g$] (0, 0) -- (2, 0)
-%         to [R, l_=${Z_{\text{in}}}$, -*] (2, 2)
-%         to [R, l_=$Z_g$] (0, 2);
-
-%         \draw (2, 2) -- (2.25, 2.25);
-        
-%         \draw 
-%         (3.45, 2.4) 
-%         node[]{$\displaystyle{\tilde V_{\text{in}} = \tilde V_g\frac{Z_{\text{in}}}{Z_{\text{in}} + Z_g}}$} 
-%         (3.45, 2.4);
-%     \end{circuitikz}
-%     \caption{Voltage division over net input impedance, $Z_\text{in}$\vspace{-0.5cm}}
-%     \label{volt_diag}
-% \end{figure}
-
-% To explain this effect for the short circuited (zero) load, we know that $\Gamma_L = -1 \implies \phi_\Gamma = \pi$ and the voltage along the transmission line is 
-% $\tilde V(z) = \tilde V_0^+e^{-j\beta z}(1 + ||\Gamma_L|| e^{j2\beta z + j\phi_\Gamma})$. Thus, the voltage minimum occurs
-% when $\phi_\Gamma + 2\beta z = (2k + 1)\pi, k \in \mathbb{Z}$. Since $\beta \propto \omega$, as we increase frequencies, there is a 
-% change in $||\tilde V(z)||$. Also, since current $\tilde I = \frac{\tilde V_0}{Z_0}e^{-j\beta z}(1 - ||\Gamma||e^{j2\beta z + j\phi_\Gamma})$, there is a current maximum
-% at voltage minimum, as when $||(1 + e^{j2\beta z + j\phi_\Gamma})||$ is minimum $||(1 - e^{j2\beta z + j\phi_\Gamma})||$ will be at its maximum.
-
-
-% To explain voltage minimum for the capacitive load, we know that net input impedance of the load and transmission line at the source, $Z_in$, varies with frequency:
-% \[
-%     Z_{\text{in}} = Z(z)\big\rvert_{z=-L} = Z_0 \frac{1+\Gamma e^{j2\beta z}}{1-\Gamma e^{j2\beta z}}\bigg\rvert_{z=-L} = Z_0 \frac{Z_L + jZ_0\tan{\beta L}}{Z_0 + jZ_L\tan{\beta L}}
-% \]
-
-% Thus, at certain frequencies, when $Z_\text{in}$ is minimum, $||\tilde V_\text{in}||$ will also be minimum. To find frequencies at which this minimum will occur,
-% we know that now $\Gamma = \frac{jX_c(\omega) - Z_0}{jX_c(\omega) + Z_0} = ||\Gamma||e^{j\phi_\Gamma}$. Here, we note that for a pure
-% capacitive load $||\Gamma|| = 1$ and phase is a function of frequency, $\phi_\Gamma(\omega) = 2\arctan(\frac{10^8j}{50\omega})$ for $C = 0.01\mu F$, as opposed to the short circuited load where $\phi_\Gamma = \pi$.
-% Thus, the voltage minimums will occur at $2\beta z + \phi_\Gamma(\omega) = (2k+1)\pi, k \in \mathbb{Z}$, where $f_\text{min}$ will be skewed beacuse of the frequency-depedance of reflection coefficient's phase.
+The connector length and impedance as well as it sticks out and is not a microstrip at the end. Thus, our calculations 
+reveal a close, but slightly off impedance. It is on the same quadrant of the smith chart and close to the observed value.
 
 \section{Notes}
 
 All images taken during the lab were post-processed in a batch using a custom script
 that bit-wise inverts the pixels and binarizes the resulting image based on a custom threshold.
-No adjustments or modifications were made to the readings, for which the oscilloscope's measurements
+No adjustments or modifications were made to the readings, for which the measurements on the VNA
 are also shown alongside the waveforms. All scripts and related work can be found at 
 \href{https://github.com/pranshumalik14/ece320-labs}{\texttt{github.com/pranshumalik14/ece320-labs}}.
+
+\pagebreak
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab2/short-cir-peak.jpg}
+      \caption{Short circuit load maximum}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab2/short-cir-valley.jpg}
+      \caption{Short circuit load minimum}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-peak.jpg}
+      \caption{Unknown load maximum}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-valley.jpg}
+      \caption{Unknown load minimum}
+  \end{subfigure}
+  \caption{Snapshots for measurement of maximum and minimum values of VSW pattern on the VNA \vspace{-0.5cm}}
+  \label{v_t_matched_tline}
+\end{figure}
 
 \end{document}
