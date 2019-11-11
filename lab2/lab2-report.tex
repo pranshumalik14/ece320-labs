@@ -22,12 +22,17 @@
 \definecolor{dimgray}{rgb}{0.51, 0.51, 0.51}
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{units}
-
 \newcommand{\oscope}[2] % #1 = name , #2 = rotation angle
 {
     \draw[thick,rotate=#2] (#1) circle (12pt)
     (#1) ++(-0.35,-0.1) -- ++(0.3,0.3) --++(0,-0.3)-- ++(0.3,0.3) --++(0,-0.3);
 }
+\def\therefore{\boldsymbol{\text{ }
+\leavevmode
+\lower0.4ex\hbox{$\cdot$}
+\kern-.5em\raise0.7ex\hbox{$\cdot$}
+\kern-0.55em\lower0.4ex\hbox{$\cdot$}
+\thinspace\text{ }}}
 \pgfarrowsdeclarecombine{dimarrow}{dimarrow}{latex}{latex}{}{}
 \NewDocumentCommand\Dimline { m m o } {
   \draw[|-|, thick, shorten >=-.5\pgflinewidth, shorten <=-.5\pgflinewidth,
@@ -38,7 +43,6 @@
   },
   postaction=decorate] #1 -- #2 ;
 }
-
 \pgfplotstableread{
 x   SC   UNKWN
 0   -70.430 -53.823
@@ -70,6 +74,7 @@ x   SC   UNKWN
 \maketitle
 
 \section{Introduction}
+\vspace{-0.3cm}
 
 This laboratory session was focused on investigating the voltage standing wave (VSW) pattern along a microstrip transmission line, 
 as well as its depedance on the load impedance. Figure 1 shows the diagram of a microstrip line that sits on the PCB substrate at the bottom and free
@@ -102,11 +107,11 @@ the voltage at that position we are able to determine the VSW pattern along the 
     \Dimline{(nA4)}{(nB4)}[$h$];
     \draw [densely dashed, help lines, blend mode=color dodge]  (nB4) -- (flr) (btr-1) -- (nA2)  (nB2) -- (nB3)  (nA4) -- (nA3) (nA1) -- (btl-1) (nB1) -- (btr-1 |- br);
   \end{tikzpicture}
-  \caption{A microstrip transmission line\vspace{-0.5cm}}
+  \caption{A microstrip transmission line\vspace{-1cm}}
 \end{figure}
 
 \section{Measurement of Microstrip Line Characteristics}
-
+\vspace{-0.3cm}
 We know that since the wave travels in a compound medium -- the PCB substrate and the air -- we will have 
 to consider an effective dielectric constant dependant on the geometry as well as the substrate parameters. It has been
 found that this is best described using a combination of conformal mapping and empiral formulae, which are:
@@ -122,11 +127,7 @@ where $s = \frac{w}{h}$ and
 The characteristic impedance of a microstrip line can also be found using empiral formulae, such as:
 
 \begin{align*}
-    Z_0 &= \frac{60}{\sqrt{\epsilon_{\text{eff}}}}\ln{\left(\frac{6 + (2\pi - 6)e^{-t}}{s} + \sqrt{1 + \frac{4}{s^2}}\right)}
-\end{align*}
-where
-\begin{align*}
-  t &= \left(\frac{30.65}{s}\right)^{0.75}
+    Z_0 &= \frac{60}{\sqrt{\epsilon_{\text{eff}}}}\ln{\left(\frac{6 + (2\pi - 6)e^{-t}}{s} + \sqrt{1 + \frac{4}{s^2}}\right)} \quad \text{where} \quad t = \left(\frac{30.65}{s}\right)^{0.75}
 \end{align*}
 
 We measured the width of the microstrip line and used the above formulae to calculate the theoretical values of the
@@ -171,7 +172,7 @@ the location of the first minimum magnitude $d_\text{min}$. The experimental SWR
       \end{axis}
     \end{tikzpicture}
   }
-  \caption{VSW pattern for a shorted load on the microstrip line\vspace{-0.3cm}}
+  \caption{VSW pattern for a shorted load on the microstrip line\vspace{-0.2cm}}
   \label{VNA_log_mag_shorted}
 \end{figure}
 
@@ -184,26 +185,33 @@ Thus,
 
 Although here the VSWR is large, it is still very small compared to the theoretical value of $\infty$. But to
 show that our measurements are still accurate, we can show that the corresponding value of reflection coefficient
-at the load, $||\Gamma_L|| = \frac{\text{VSWR}-1}{\text{VSWR}+1} = 0.921 \approx 1$ is close to the theoretical value of 1.
-
-We also measured that two consecutive voltage minimums were $\approx 8 \text{ cm}$ apart, thus giving us the wavelength 
+at the load, $||\Gamma_L|| = \frac{\text{VSWR}-1}{\text{VSWR}+1} = 0.921 \approx 1$ is close to the theoretical value of 1. We also measured that two consecutive voltage minimums were $\approx 8 \text{ cm}$ apart, thus giving us the wavelength 
 of the voltage wave $\frac{\lambda}{2} = 8\text{ cm} \implies \lambda = 16\text{ cm} \approx 16.3\text{ cm}$, since the wavelength 
 observed in the SWR pattern is half of the wave's wavelength. Using the above result for wavelength and the chosen frequency of 1 GHz, we get 
 $v_p = 1.6\cdot10^8 \text{ m/s} = \frac{c}{\sqrt{\epsilon_\text{eff}}} \implies \epsilon_\text{eff} = 3.511 \approx 3.347$. 
 Thus, our measurements do closely match the theoretical results for all the parameters.
+\vspace{-0.3cm}
 
 \section{Using Standing Wave Patterns for Load Calculations}
 
-Observed waveforms at different points on the transmission line can be found in Figure 5.
+\vspace{-0.2cm}
+Using data from figure 3 and performing similar calculations as above we get
+\begin{align*}
+  || \tilde V_\text{max}|| = k\cdot 10^{-\frac{46.294}{20}} = k\cdot 0.00484 \quad &\text{and} \quad || \tilde V_\text{min}|| = k\cdot 10^{-\frac{53.823}{20}} = k\cdot 0.00203\\
+  \therefore \text{ VSWR} = 2.379 \quad &\text{and} \quad ||\Gamma_L|| = 0.408 
+\end{align*}
+
+Here we note that $\Gamma_L = ||\Gamma_L||e^{j\phi_\Gamma}$. To get phase of the reflection coefficient, $\phi_\Gamma$, we recorded the distance of the first minimum from the load towards the 
+generator, $d_\text{min} = 6.9 \text{ cm}$, and used previous measurement of $\lambda = 16\text{ cm}$. Thus,
+\begin{align*}
+  \phi_\Gamma = \pi + \frac{4\pi d_\text{min}}{\lambda}= 8.561\text{ radians}
+\end{align*}
+We can get the load impedance using our measurements by 
+\[
+  \Gamma_L  = 0.408e^{j8.561} = \frac{Z_L - Z_0}{Z_L + Z_0} \implies Z_L = 24.568 + j18.2892 \quad [\Omega]
+\]
 
 \begin{figure}[hb]
-  \centering
-  \includegraphics[width=0.45\textwidth]{../photos/lab2/unkwn-load.jpg}
-  \caption{Transmission line terminated with load $Z_L = Z_0$\vspace{-0.5cm}}
-  \label{tline_matching_z_0}
-\end{figure}
-
-\begin{figure}[ht]
   \centering
   \resizebox{0.55\textwidth}{!}{
     \begin{tikzpicture}
@@ -222,33 +230,44 @@ Observed waveforms at different points on the transmission line can be found in 
       \end{axis}
     \end{tikzpicture}
   }
-  \caption{VSW pattern for an unknown load on the microstrip line}
+  \caption{VSW pattern for the unknown load on the microstrip line}
   \label{VNA_log_mag_unknown}
 \end{figure}
 
+This impedance was also measured directly using the VNA on a Smith chart, shown in figure 4. The direct measurement yielded
+$Z_\text{L,VNA} = 29.974 + j4.581$, which has magnitude $||Z_\text{L,VNA}|| = 30.322$ which is very close to the magnitude of our 
+derived impedance $||Z_L|| = 30.628$. Since the expression for load impedance, $Z_L$, is dependant on both $\phi_\Gamma$ and $||\Gamma||$, slight 
+errors in measurement make a large difference to the final result due to error multiplication. Our measurements have still 
+given us a good estimate of the actual impedance, and this is also shown on the Smith chart in figure 5.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
-  \begin{picture}(200,200)
-    \put(0,0) {\includegraphics[width=0.6\textwidth]{../photos/lab2/smith-chart.png}}
-    \put(10,10){hello}
-  \end{picture}
-  \caption{Comparison of measured and calculated imepedance}
+  \includegraphics[width=0.45\textwidth]{../photos/lab2/unkwn-load.jpg}
+  \caption{Impedance of the unkown load measured by the VNA\vspace{-0.2cm}}
+  \label{tline_matching_z_0}
 \end{figure}
 
-The connector length and impedance as well as it sticks out and is not a microstrip at the end. Thus, our calculations 
-reveal a close, but slightly off impedance. It is on the same quadrant of the smith chart and close to the observed value.
+We suspect that the error mainly originates from the adapter as well as the load connector since there was a difference in geometry and material (and hence impedance); 
+the conector and adapater were coaxial instead of a microstrip structure. Furthermore, there could also be error in accurately measuring the added length of the 
+connector.
 
-\section{Notes}
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=0.6\textwidth]{../photos/lab2/smith-chart.png}
+  \begin{tikzpicture}
+    \node[inner sep=0pt] (smith) at (0,0)
+    {\includegraphics[width=0.6\textwidth]{../photos/lab2/smith-chart.png}};
+    \node[draw] at (-2.4,2) {$Z_L = 24.568 + j18.2892$};
+    \node[draw] at (-3.5,0.45) {$Z_\text{L,VNA} = 29.974 + j4.581$};
+  \end{tikzpicture}
+  \caption{Comparison of indirectly and directly measured imepedance on the Smith chart}
+\end{figure}
 
-All images taken during the lab were post-processed in a batch using a custom script
-that bit-wise inverts the pixels and binarizes the resulting image based on a custom threshold.
-No adjustments or modifications were made to the readings, for which the measurements on the VNA
-are also shown alongside the waveforms. All scripts and related work can be found at 
-\href{https://github.com/pranshumalik14/ece320-labs}{\texttt{github.com/pranshumalik14/ece320-labs}}.
+\section{Appendix}
 
-\pagebreak
-\begin{figure}
+Some key measurements from the log-mag plots on the VNA are shown in figure 6.
+
+\begin{figure}[ht]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
       \includegraphics[width=\textwidth]{../photos/lab2/short-cir-peak.jpg}
@@ -268,8 +287,16 @@ are also shown alongside the waveforms. All scripts and related work can be foun
       \includegraphics[width=\textwidth]{../photos/lab2/unkwn-load-valley.jpg}
       \caption{Unknown load minimum}
   \end{subfigure}
-  \caption{Snapshots for measurement of maximum and minimum values of VSW pattern on the VNA \vspace{-0.5cm}}
+  \caption{Snapshots for measurement of maximum and minimum values of VSW pattern on the VNA}
   \label{v_t_matched_tline}
 \end{figure}
+
+\section{Notes}
+
+All images taken during the lab were post-processed in a batch using a custom script
+that bit-wise inverts the pixels and binarizes the resulting image based on a custom threshold.
+No adjustments or modifications were made to the readings, for which the measurements on the VNA
+are also shown alongside the waveforms. All scripts and related work can be found at 
+\href{https://github.com/pranshumalik14/ece320-labs}{\texttt{github.com/pranshumalik14/ece320-labs}}.
 
 \end{document}
