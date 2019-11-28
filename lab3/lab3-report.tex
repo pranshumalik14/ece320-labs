@@ -72,12 +72,31 @@ and measurements are based on the unknown \underline{"orange"} labelled load giv
     \draw (4.2, -0.75) node{$L_2$} (4.2, -0.75);
     \draw (5.75, 1) node{$Z_0, \beta$} (5.75, 1);
     \draw [dotted, thick] (4,-0.35) -- (4,2.35) (8,-0.35) -- (8,2.35);
+
+
+    \draw
+    (0,-2) to [esource, l_=$\text{VNA}$] (0, -4) -- (2,-4)
+    to [tline, o-o] (4,-4)
+    to [tline, *-o] (6,-4)
+    to [tline, o-*] (8,-4) -- (8.5,-4)
+    to [R, l_=$Z_L$] (8.5, -2) -- (8,-2)
+    to [tline, l=${d_0}$,*-o] (6,-2)
+    to [tline, o-o, l=${d_1}$] (4,-2)
+    to [tline, l=${Z_0, \beta, L}$, *-o] (2,-2)
+    to [R, l_=${Z_\text{VNA}=Z_0}$] (0, -2);
+
+    \draw (0,-4) to[short, *-*] node[ground]{} (0,-4);
+    \draw (4,-4) to [R, l=$jb_2$] (4,-2);
+    \draw (6,-4) to [R, l=$jb_1$] (6,-2);
   \end{circuitikz}
   \caption{A double-stub matching network}
 \end{figure}
 
 
 \section{Measurement of the Unknown Load Impedance}
+
+We measured load impedance on a Smith Chart using the VNA, shown in Figure 2 (a). The values of the 
+(de-embedded) load impedance with its normalized form taking $Z_0=50\Omega$ are: 
 
 \begin{align*}
   Z_L &= 31.08 + 9.32j \quad [\Omega]\\
@@ -86,7 +105,22 @@ and measurements are based on the unknown \underline{"orange"} labelled load giv
 \end{align*}
 
 Also, if we rotate $Z_\text{L,N}$ by $0.16\lambda$, we end up very near $Y_A$ giving us $Z_\text{L,N}' = 0.85 - 0.45j$ 
-corresponding to $Z_L' = 42.5 + 22.5j [\Omega]$ which closely matches the result shown by the VNA in Figure x. 
+corresponding to $Z_L' = 42.5 - 22.5j [\Omega]$ which closely matches the result shown by the VNA in Figure x. 
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_c.jpg}
+      \caption{Port C $(0\text{m})$}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_d.jpg}
+      \caption{Port D $(30\text{m})$}
+  \end{subfigure}
+  \caption{Measured $V(t)$ at different loactions along the transmission line with $Z_L = Z_0$ \vspace{-0.5cm}}
+  \label{v_t_matched_tline}
+\end{figure}
 
 \section{Smith Charts and the Graphical Matching Process}
 
@@ -96,7 +130,7 @@ causes this complication as explained in the lab document. The smith chart and o
 our stubs are attached.
 
 \section{Designing a Double-stub Matching Network}
-\begin{table}[h]
+\begin{table}
   \[
       \begin{array}{c|c}
           \textbf{Parameter} & \textbf{Value} \\ \hline
@@ -110,7 +144,7 @@ our stubs are attached.
 \end{table}
 
 \section{Experimental Determination }
-\begin{table}[h]
+\begin{table}
   \[
       \begin{array}{c|c}
           \textbf{Parameter} & \textbf{Value} \\ \hline
