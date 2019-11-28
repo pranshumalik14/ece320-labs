@@ -1,4 +1,4 @@
-# ece331-labs
+# ece320-labs
 
 Fields and Waves
 
