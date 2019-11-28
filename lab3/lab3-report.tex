@@ -49,7 +49,7 @@ This laboratory session was focused on investigating the input impedance and ref
 making transformations to the load impedance using a double stub network such that we are able to match the input impedance 
 to the transmission line. We also measured the voltage standing wave ratio (VSWR) for the same matching network to characterize
 its bandwidth. Figure 1 shows the schematic for a double-stub tuner and its equivalent circuit. Our theoretical work 
-and measurements are based on the unknown "orange" labelled load given to us. 
+and measurements are based on the unknown \underline{"orange"} labelled load given to us. 
 
 \begin{figure}[h]
   \centering
@@ -76,8 +76,17 @@ and measurements are based on the unknown "orange" labelled load given to us.
   \caption{A double-stub matching network}
 \end{figure}
 
+
 \section{Measurement of the Unknown Load Impedance}
 
+\begin{align*}
+  Z_L &= 31.08 + 9.32j \quad [\Omega]\\
+  Z_\text{L,N} &= 0.622 + 0.186j\\
+  Y_\text{L,N} &= 1.476 - 0.441j
+\end{align*}
+
+Also, if we rotate $Z_\text{L,N}$ by $0.16\lambda$, we end up very near $Y_A$ giving us $Z_\text{L,N}' = 0.85 - 0.45j$ 
+corresponding to $Z_L' = 42.5 + 22.5j [\Omega]$ which closely matches the result shown by the VNA in Figure x. 
 
 \section{Smith Charts and the Graphical Matching Process}
 
