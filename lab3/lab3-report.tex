@@ -45,39 +45,54 @@
 
 \section{Introduction}
 
-This laboratory session was focused on investigating the voltage standing wave (VSW) pattern along a microstrip transmission line, 
-as well as its depedance on the load impedance. Figure 1 shows the schematic for a double-stub tuner and its equivalent circuit. 
+This laboratory session was focused on investigating the input impedance and reflection coefficient at the load, and
+making transformations to the load impedance using a double stub network such that we are able to match the input impedance 
+to the transmission line. We also measured the voltage standing wave ratio (VSWR) for the same matching network to characterize
+its bandwidth. Figure 1 shows the schematic for a double-stub tuner and its equivalent circuit. Our theoretical work 
+and measurements are based on the unknown "orange" labelled load given to us. 
 
 \begin{figure}[h]
   \centering
-  \begin{circuitikz} 
+  \begin{circuitikz}
     \draw
-    (0,2) to [sqV, l_=$\tilde V_g$] (0, 0) -- (2,0)
-    to [tline, l_=Transmission Line, o-o] (7,0)
-    to [R, l=$Z_L$] (7, 2)
-    to [tline, l=${Z_0, \beta, L}$, o-o] (2,2)
-    to [R, l_=$Z_g$, i<^=$\tilde I$] (0, 2);
-    
-    \draw (2,2.35) node{$\tilde V$} (2, 2);
-    \draw (2,0) -- (2.5,-0.15) to[sV, l_=\footnotesize{CH1}, color=white, name=CH1] (2.5,1.75) -- (2, 2);
-    \oscope{CH1}{0}
-    \draw (7,0) -- (8,-0.15) to[sV, l_=\footnotesize{CH2}, color=white, name=CH2] (8,1.75) -- (7, 2);
-    \oscope{CH2}{0}
+    (0,2) to [esource, l_=$\text{VNA}$] (0, 0) -- (2,0)
+    to [tline, o-o] (4,0)
+    to [tline, *-o] (6,0)
+    to [tline, o-*] (8,0) -- (8.5,0)
+    to [R, l_=$Z_L$] (8.5, 2) -- (8,2)
+    to [tline, l=${d_0}$,*-o] (6,2)
+    to [tline, o-o, l=${d_1}$] (4,2)
+    to [tline, l=${Z_0, \beta, L}$, *-o] (2,2)
+    to [R, l_=${Z_\text{VNA}=Z_0}$] (0, 2);
+
+    \draw[thick] (6,2) -- (7, 0.5) -- (7,-1.5) -- (6,0);
+    \draw[thick] (4,2) -- (5, 0.5) -- (5, -1.5) -- (4,0);
     \draw (0,0) to[short, *-*] node[ground]{} (0,0);
-    \draw [dotted] (2,-0.35) -- (2,0.35) (7,-0.35) -- (7,0.35)
-    (2.1, -0.5) node{$z=-L$} (2, -0.35) (7, -0.5) node{$z=0$} (7, -0.35);
+    \draw (6.2, -0.75) node{$L_1$} (6.2, -0.75);
+    \draw (4.2, -0.75) node{$L_2$} (4.2, -0.75);
+    \draw (5.75, 1) node{$Z_0, \beta$} (5.75, 1);
+    \draw [dotted, thick] (4,-0.35) -- (4,2.35) (8,-0.35) -- (8,2.35);
   \end{circuitikz}
   \caption{A double-stub matching network}
 \end{figure}
 
 \section{Measurement of the Unknown Load Impedance}
 
+
+\section{Smith Charts and the Graphical Matching Process}
+
+We are asked to do a double stub matching. However, it requires some extra steps compared to single stub matching
+including the rotation of the unit circle and movement of vertain values along with it. Addition of the second stub
+causes this complication as explained in the lab document. The smith chart and our calculations for the lengths of 
+our stubs are attached.
+
+\section{Designing a Double-stub Matching Network}
 \begin{table}[h]
   \[
       \begin{array}{c|c}
           \textbf{Parameter} & \textbf{Value} \\ \hline
           L_1 & 12.15 \text{ cm}\\
-          L_2 & 48.697 \text{ cm}\\
+          L_2 & 7.88 \text{ cm}\\
           L_1' & 16.88 \text{ cm}\\
           L_2' & 16.69 \text{ cm}
       \end{array}
@@ -85,10 +100,41 @@ as well as its depedance on the load impedance. Figure 1 shows the schematic for
   \caption{Theoretically calculated stub length pairs}
 \end{table}
 
-\section{Smith Charts and the Graphical Matching Process}
-\section{Designing a Double-stub Matching Network}
 \section{Experimental Determination }
+\begin{table}[h]
+  \[
+      \begin{array}{c|c}
+          \textbf{Parameter} & \textbf{Value} \\ \hline
+          L_1 & 1232 \text{ cm}\\
+          L_2 & 1232 \text{ cm}\\
+          L_1' & 1232 \text{ cm}\\
+          L_2' & 1232 \text{ cm}
+      \end{array}
+  \]
+  \caption{Experimentally measured stub lengths}
+\end{table}
 \section{Bandwidth Calculations}
+
+a)  Bandwidth smaller than 2
+    The y-axis is VSWR and VSWR=(1+gamma)/(1-gamma). For this value to be less than or equal to 2, gamma has to be
+    less than or equal to 0.33. 
+b)  Bandwidth limitation
+    In terms of the bandwidth, shorter lines perform better. Longer lines change impedance faster compared
+    to shorter lines when the frequency is modified. The reason for that is the following:
+    Consider a lossless line, alpha is zero in this case and we only have j beta. This expression is also 
+    equal to w*sqrt(LC)*j. So w*sqrt(LC)=beta. Now, Zin = Z0(Zl+jZ0tan(beta*l)/(Z0+jZltan(beta*l))) and
+    reflection coef.= (Zl-Z0)/(Zl+Z0). When l in the first equation is large then a small change in beta (meaning in w)
+    is going to result in a large change in Zin because of tan(beta*l) function. Consequently a large jump in reflection coefficient. 
+    Since reflection coefficient has to be less than 0.33 there is a smaller window of frequencies we can use
+    and fit in this constraint. However, when l is smaller (ie. shorter line) we can modify w much more and
+    still stay in the necessary bound of values for the reflection coefficient. 
+    For 20log(|gamma|) when gamma=1/3 20log(|gamma|)~-10dB. This suggests magnitudes smaller than -10 dB are 
+    acceptable values for gamma (so that the reflection doesn't modify the final value as much).
+c)  Measurements
+    Our measurements were pretty close within an error of 2 cm. Considering the number of operations we did
+    on the smith chart with pencil and paper, we received accurate values. Additionally measurements on 
+    the double stub matching network are also susceptible to error.
+
 \section{Notes}
 
 All images taken during the lab were post-processed in a batch using a custom script
