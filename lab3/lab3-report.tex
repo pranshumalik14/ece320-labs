@@ -95,28 +95,44 @@ and measurements are based on the unknown \underline{"orange"} labelled load giv
 
 \section{Measurement of the Unknown Load Impedance}
 
-We measured load impedance on a Smith Chart using the VNA, shown in Figure 2 (a). The values of the 
+We measured load impedance on a Smith Chart using the VNA and , shown in Figure 2 (a). The values of the 
 (de-embedded) load impedance with its normalized form taking $Z_0=50\Omega$ are: 
 
-\begin{align*}
-  Z_L &= 31.08 + 9.32j \quad [\Omega]\\
-  Z_\text{L,N} &= 0.622 + 0.186j\\
-  Y_\text{L,N} &= 1.476 - 0.441j
-\end{align*}
+\begin{table}[h]
+  \[
+      \begin{array}{c|c}
+          \textbf{Parameter} & \textbf{Value} \\ \hline
+          Z_L & 31.08 + 9.32j[\Omega]\\
+          Z_\text{L,N} & 0.622 + 0.186j\\
+          Y_\text{L,N} & 1.476 - 0.441j
+      \end{array}
+  \]
+  \caption{Measured and calculated load parameters on the VNA}
+\end{table}
 
-Also, if we rotate $Z_\text{L,N}$ by $0.16\lambda$, we end up very near $Y_A$ giving us $Z_\text{L,N}' = 0.85 - 0.45j$ 
-corresponding to $Z_L' = 42.5 - 22.5j [\Omega]$ which closely matches the result shown by the VNA in Figure x. 
+Also, if we rotate $Z_\text{L,N}$ by $0.16\lambda$, we end up very near $Y_A$, coincidently (see section 3), 
+giving us $Z_\text{L,N}' = 0.85 - 0.45j$ corresponding to $Z_L' = 42.5 - 22.5j [\Omega]$ which closely matches 
+the result shown by the VNA in Figure x. 
 
 \begin{figure}[ht]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_c.jpg}
+      \includegraphics[width=\textwidth]{../photos/lab3/load_as_is.jpg}
       \caption{Port C $(0\text{m})$}
   \end{subfigure}
   \quad
   \begin{subfigure}[b]{0.45\textwidth}
-      \includegraphics[width=\textwidth]{../photos/lab1/v_t_pt_d.jpg}
-      \caption{Port D $(30\text{m})$}
+    \includegraphics[width=\textwidth]{../photos/lab3/load_deembedded.jpg}
+    \caption{Port D $(30\text{m})$}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.37\textwidth}
+    \begin{tikzpicture}
+      \node[inner sep=0pt] (smith) at (0,0)
+      {\includegraphics[width=\textwidth]{../photos/lab3/deembedding.png}};
+      \node[draw, thick] at (-0.9,0.9) {$Z_\text{L,N}$};
+      \node[draw, thick] at (0,-1.3) {$Z_\text{L,N}'$};
+    \end{tikzpicture}
+    \caption{Port D $(30\text{m})$}
   \end{subfigure}
   \caption{Measured $V(t)$ at different loactions along the transmission line with $Z_L = Z_0$ \vspace{-0.5cm}}
   \label{v_t_matched_tline}
