@@ -6,6 +6,8 @@
 \usepackage{lipsum}
 \usepackage{amsfonts}
 \usepackage{hyperref}
+\usepackage{mathtools}
+\providecommand\given{}
 \usepackage[utf8]{inputenc}
 \usepackage[letterpaper,margin=1in]{geometry}
 \usepackage[parfill]{parskip}
@@ -89,46 +91,52 @@ circuit. Our theoretical work and measurements are based on the unknown \underli
     \draw (0,-4) to[short, *-*] node[ground]{} (0,-4);
     \draw (4,-4) to [R, l=$jb_2$] (4,-2);
     \draw (6,-4) to [R, l=$jb_1$] (6,-2);
+    \draw [dotted, thick] (4,-4.35) -- (4,-3.95) (4, -2.05) -- (4,-1.65) (8,-4.35) -- (8,-1.65);
   \end{circuitikz}
   \caption{A double-stub matching network with $d_0 = 3.4\text{ cm}$ and $d_1 = 3.8\text{ cm}$}
 \end{figure}
-\vspace{-0.7cm}
+\vspace{-0.4cm}
 
 \section{Measurement of the Unknown Load Impedance}
-\vspace{-0.3cm}
-The unknown load impedance was measured over a frequency range of $[300\text{MHz},1.3\text{GHz}]$, with and without de-embedding, using the VNA on a Smith Chart shown in Figure 2 (a) and (b). 
-The values of the load impedance and admittance with its normalized form taking $Z_0=50\Omega$ are given in Table 1.
+The unknown load impedance was measured over a frequency range of $[300\text{MHz},1.3\text{GHz}]$, with and 
+without de-embedding, using the VNA on a Smith Chart shown in Figure 2 (a) and (b). The values of the load 
+impedance and admittance with its normalized form taking $Z_0=50\Omega$ are given in Table 1.
 
 \begin{table}[h]
   \[
       \begin{array}{c|c}
           \textbf{Parameter} & \textbf{Value} \\ \hline
-          Z_L & 31.08 + 9.32j[\Omega]\\
+          Z_L & 31.08 + 9.32j \quad [\Omega]\\
+          Y_L & 0.029 + 0.089j \quad [\Omega^{-1}]\\
           Z_\text{L,N} & 0.622 + 0.186j\\
-          Y_\text{L,N} & 1.476 - 0.441j
+          Y_\text{L,N} & 1.476 - 0.441j\vspace{-0.3cm}
       \end{array}
   \]
-  \caption{Measured load parameters using the VNA}
+  \caption{Measured impedance and admittance of the unknown load}
 \end{table}
 
-Also, if we rotate $Z_\text{L,N}$ by $0.16\lambda$ at $f=800\text{Mhz}$, we end up very near $Y_A$, coincidently (see section 3), 
-giving us $Z_\text{L,N}' = 0.85 - 0.45j$ corresponding to $Z_L' = 42.5 - 22.5j [\Omega]$ which closely matches 
-the result shown by the VNA in Figure x. 
+Since there is an adapter and extension ports between the ends of the BNC cable and the load, they act as 
+additional sections of transmission lines which cause a rotation of the impedance on the Smith chart, and 
+we can undo this rotation by rotating (de-embedding) the measurement anti-clockwise (towards the load) by the same 
+extension length. The lab aks to de-embed our load by $T = 0.2 \text{ ns}$ at $f=800\text{Mhz}$, which corresponds 
+to a distance of $\frac{c\cdot T}{c/f} = (0.2\cdot10^{-9}\cdot 800\cdot 10^{6}) \lambda = 0.16\lambda \approx 6\text{ cm}$, 
+where $\lambda$ is the wavelength of a wave propagating at the speed of light, $c$, with frequency $f$.
 
-% "Equivalent electrical distance (in wavelengths) at 800 MHz associated with the 0.2 ns port
-% extension. Demonstrate that this additional distance corresponds to the Smith chart
-% transformation seen in the measurement"
+To de-embed the load we rotate $Z_\text{L,N}$ anti-clockwise (towards the load) by $0.16\lambda$ on the SWR circle, 
+shown in Figure 2 (c), and we get $Z_\text{L,N}' = 0.85 - 0.45j$, which is coincidently very near $Y_\text{A,N}$ 
+(see section 3), and corresponds to $Z_L' = 42.5 - 22.5j [\Omega]$, closely matching the result shown by the VNA 
+in Figure 2 (b).
 
 \begin{figure}[ht]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
       \includegraphics[width=\textwidth]{../photos/lab3/load_as_is.jpg}
-      \caption{Load }
+      \caption{Measured impedance on the VNA}
   \end{subfigure}
   \quad
   \begin{subfigure}[b]{0.45\textwidth}
     \includegraphics[width=\textwidth]{../photos/lab3/load_deembedded.jpg}
-    \caption{Port D $(30\text{m})$}
+    \caption{Impedance de-embedded by $0.2\text{ ns}$ on the VNA}
   \end{subfigure}
   \begin{subfigure}[b]{0.37\textwidth}
     \begin{tikzpicture}
@@ -137,74 +145,146 @@ the result shown by the VNA in Figure x.
       \node[draw, thick] at (-0.9,0.9) {$Z_\text{L,N}$};
       \node[draw, thick] at (0,-1.3) {$Z_\text{L,N}'$};
     \end{tikzpicture}
-    \caption{Port D $(30\text{m})$}
+    \caption{Theoretically de-embedded impedance}
   \end{subfigure}
-  \caption{Measured }
-  \label{v_t_matched_tline}
+  \caption{Measured and de-embedded imepedance of the unknown load}
+  \label{deembedding_load}
 \end{figure}
-
-\section{Smith Charts and the Graphical Matching Process}
-
-
 
 \section{Designing a Double-stub Matching Network}
 
-We are asked to do a double stub matching. However, it requires some extra steps compared to single stub matching
-including the rotation of the unit circle and movement of vertain values along with it. Addition of the second stub
-causes this complication as explained in the lab document. The smith chart and our calculations for the lengths of 
-our stubs are attached. (First we find the rotated unit circle for the first stub length) and then calculate the corresponding
-stub length for matching the mapped impendance on the g=1 circle.
+To start the matching process, we need to transform $Z_L$ by moving it towoards the generator by $d_0$ to reach the
+first stub. The impedance at that loaction corresponds to rotating $Z_\text{L,N}$ by $0.09067\lambda$ clockwise on the 
+SWR circle leading to $Z_\text{A,N} = 0.92 + 0.49j$, and $Y_\text{A,N} = 0.85 - 0.45j$ which was obtained by 
+rotating $Z_\text{A,N}$ by $\frac{\lambda}{4}$ (or $\pi$ radians) on the same (SWR) circle. From here, we 
+followed the double-stub matching procedure provided in the laboratory manual and the \underline{Smith charts and our 
+calculations} for the lengths of both stubs are \underline{attached with this report}.
 
-\begin{table}
+\begin{table}[h]
+  \centering
   \begin{subtable}{0.8\textwidth}
     \[
       \begin{array}{c|c}
           \textbf{Fundamental Solution} & \textbf{Length in wavelengths}, \lambda \\ \hline
           \hat L_1 & 0.324 \lambda \\
-          \hat L_2 & 0.21 \lambda \\
+          \hat L_2 & 0.210 \lambda \\
           \hat L_1' & 0.449 \lambda\\
-          \hat L_2' & 0.445 \lambda
+          \hat L_2' & 0.445 \lambda\vspace{-0.25cm}
       \end{array}
   \]
-  \caption{Experimentally measured stub lengths}
+  \caption{Calculated matching stub length pairs in wavelengths\vspace{0.15cm}}
   \end{subtable}
   \begin{subtable}{0.8\textwidth}
     \[
         \begin{array}{c|c}
             \textbf{Fundamental Solution} & \textbf{Length in} \text{ cm}\\ \hline
-            L_1 & 12.15 \text{ cm}\\
-            L_2 & 7.88 \text{ cm}\\
-            L_1' & 16.84 \text{ cm}\\
-            L_2' & 16.69 \text{ cm}
+            L_1 & 12.15\\
+            L_2 & 7.88\\
+            L_1' & 16.84\\
+            L_2' & 16.69\vspace{-0.25cm}
         \end{array}
     \]
-    \caption{Theoretically calculated stub length pairs}
+    \caption{Calculated matching stub length pairs}
   \end{subtable}
 \end{table}
-\section{Experimental Determination }
 
+The general solution in wavelengths for $n \in \mathbb{N} + \{0\}$ is, 
+\begin{align*}
+  \hat L_1 = 0.324 \lambda + \frac{n\lambda}{2} \quad &, \quad \hat L_2 = 0.210\lambda + \frac{n\lambda}{2}\\
+  \hat L_1' = 0.449\lambda + \frac{n\lambda}{2} \quad &, \quad \hat L_2' = 0.445\lambda + \frac{n\lambda}{2}
+\end{align*}
+and the general solution in centimeters at $f = 800\text{ MHz}$ can be written as,
+\begin{align*}
+  L_1 = 12.15 + 18.75\cdot n \quad &, \quad L_2 = 7.88 + 18.75\cdot n\\
+  L_1' = 16.84 + 18.75\cdot n \quad &, \quad L_2' = 16.69 +  18.75\cdot n
+\end{align*}
 
-\section{Bandwidth Calculations}
+\section{Experimental Measurement and Verification}
 
-a)  Bandwidth smaller than 2
-    The y-axis is VSWR and VSWR=(1+gamma)/(1-gamma). For this value to be less than or equal to 2, gamma has to be
-    less than or equal to 0.33. 
-b)  Bandwidth limitation
-    In terms of the bandwidth, shorter lines perform better. Longer lines change impedance faster compared
-    to shorter lines when the frequency is modified. The reason for that is the following:
-    Consider a lossless line, alpha is zero in this case and we only have j beta. This expression is also 
-    equal to w*sqrt(LC)*j. So w*sqrt(LC)=beta. Now, Zin = Z0(Zl+jZ0tan(beta*l)/(Z0+jZltan(beta*l))) and
-    reflection coef.= (Zl-Z0)/(Zl+Z0). When l in the first equation is large then a small change in beta (meaning in w)
-    is going to result in a large change in Zin because of tan(beta*l) function. Consequently a large jump in reflection coefficient. 
-    Since reflection coefficient has to be less than 0.33 there is a smaller window of frequencies we can use
-    and fit in this constraint. However, when l is smaller (ie. shorter line) we can modify w much more and
-    still stay in the necessary bound of values for the reflection coefficient. 
-    For 20log(|gamma|) when gamma=1/3 20log(|gamma|)~-10dB. This suggests magnitudes smaller than -10 dB are 
-    acceptable values for gamma (so that the reflection doesn't modify the final value as much).
-c)  Measurements
-    Our measurements were pretty close within an error of 2 cm. Considering the number of operations we did
-    on the smith chart with pencil and paper, we received accurate values. Additionally measurements on 
-    the double stub matching network are also susceptible to error.
+Our measurements were in close agreement with our theoretical calculations and can be found in Table 3. 
+The measured values were within an error of $\pm2 \text{ cm}$ which is mainly due to the accumulation of error 
+over a large number of operations done by hand on the Smith chart, and also due to the error in recording lengths 
+of the stubs in the matching network. The Smith chart plots measured on the VNA can be found in Figure 3.
+
+\begin{table}[h]
+  \[
+    \begin{array}{c|c}
+        \textbf{Fundamental Solution} & \textbf{Length in} \text{ cm}\\ \hline
+        L_1 &  10.5\\
+        L_2 & 5.5\\
+        L_1' & 17.1 \\
+        L_2' & 16.8 \vspace{-0.25cm}
+    \end{array}
+\]
+\caption{Experimentally measured stub lengths}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab3/matching_short_pair.jpg}
+      \caption{Matched load using the shorter length stubs}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{../photos/lab3/matching_long_pair.jpg}
+    \caption{Matched load using the longer length stubs}
+  \end{subfigure}
+  \caption{Measuring input impedance over our frequency range for short and long stub length solutions\vspace{-0.3cm}}
+  \label{matched_stubs}
+\end{figure}
+
+\section{The Standing Wave Ratio and Bandwidth Calculations}
+
+Since the input impedenace of the matching network changes with frequency, it is important to see the signal transfer
+characteristics of the matching network to determine the bandwidth of frequencies that "pass" over to the load without 
+much distortion and reduction in amplitude. We use the voltage standing wave ratio ($\text{VSWR}$) to define bandwidth, 
+$\text{BW}$, as,
+\[
+  \text{VSWR}(\omega) = \frac{1+||\Gamma_L(\omega)||}{1-||\Gamma_L(\omega)||} \quad \text{and} \quad \text{BW} = 
+  \left\{\omega \in \mathbb{R}^{+} \middle | \text{VSWR}(\omega) \leq 2\right\}
+\]
+Here we note that the time-averaged power transmitted to load is given by $\langle P \rangle = \frac{||V_0^+||^2}{2Z_0}(1-||\Gamma_L||^2) = \langle P_\text{max} \rangle\cdot(1-||\Gamma_L||^2)$,
+where $\langle P_\text{max}\rangle$ is the maximum time-averaged power that can be delivered to the load which happens for a matched load when $\Gamma_L = 0$.
+At $\text{VSWR} = 2, \Gamma_L = \frac{1}{3} \implies \langle P \rangle \approx 0.89\cdot \langle P_\text{max}\rangle$, and thus our definition considers 
+bandwith to be the range of frequencies where the power is delivered to the load at approximately $90\%$ efficiency. Also note 
+that at bandwidth limiting frequencies, $20\log(\Gamma_L) = \Gamma_\text{L, dB} \approx -10\text{ dB}$, which suggests that 
+$\Gamma_L \geq -10\text{ dB}$ are acceptable values for the refelection coefficient such that the delivered signal's power is not 
+degraded as much. We have also recorded the VSWR versus frequency plots on the VNA for both fundamental solutions, shown in Figure 4, and the 
+bandwidths can be found in Table 4.
+
+\begin{table}[h]
+  \[
+    \begin{array}{c|c}
+        \textbf{Stub Pair} & \textbf{Bandwidth in} \text{ MHz}\\ \hline
+        \text{Short} &  [692, 908]\\
+        \text{Long} & [788, 808]\vspace{-0.25cm}
+    \end{array}
+\]
+\caption{Bandwidth of the short and long matching networks}
+\end{table}
+
+We note that shorter stubs give better performance in terms of bandwidth since they have less variation of electrical parameters,
+specifcially input impedance, with frequency compared to the longer stubs. This is beacuse the normalized input admittance of short circuited
+stubs is $Y_\text{in,N}=-j\cot(\beta L)$, where $\beta = \omega\sqrt{L'C'}$, where $L$ is the length of the stub and $L',C'$ are 
+distributed inductance and capacitance of the stub, respectively. Thus, for a fixed frequency, $\omega$, if $L$ is increased, $Y_\text{in,N}$
+and $\Gamma_L$ will vary faster, which can also be seen in Figure 3. As a result, for longer stubs we get a smaller window 
+of frequencies we can use to fit the bandwidth constraint, whereas for shorter stubs the bandwidth is larger.
+
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=\textwidth]{../photos/lab3/short_pair_bw.jpg}
+      \caption{VSWR vs frequency for the shorter length stubs}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{../photos/lab3/long_pair_bw.jpg}
+    \caption{VSWR vs frequency for the longer length stubs}
+  \end{subfigure}
+  \caption{Variation of VSWR over our frequency range\vspace{-0.3cm}}
+  \label{vswr_freq}
+\end{figure}
 
 \section{Notes}
 
